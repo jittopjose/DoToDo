@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="medium">
+    <ion-title>
+      {{toolbarText}}
+    </ion-title>
+    <ion-buttons slot="primary" class="ion-margin-end">
+      <ion-button (click)="onCreateNewTaskTypeSelect($event)">
+        <ion-icon slot="icon-only" [src]="addTaskIcon"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon slot="icon-only" [src]="settingsIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-segment value="active" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="all">
+      <ion-label>All</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="active">
+      <ion-label>Active</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="done">
+      <ion-label>Done</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list class="ion-no-margin">
+          <ion-item lines="full" *ngFor="let task of loadedTasks">
+            <span slot="start"><ion-checkbox></ion-checkbox></span>
+            <ion-label (click)="onTaskSelect(task.id)">
+              {{task.name}}
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

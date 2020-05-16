@@ -1,11 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomePage } from './home.page';
+import { TasksPage } from './tasks.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomePage,
+    component: TasksPage,
+  },
+  {
+    path: 'task-create-edit/:taskId',
+    loadChildren: () => import('./task-create-edit/task-create-edit.module').then( m => m.TaskCreateEditPageModule)
   }
 ];
 
