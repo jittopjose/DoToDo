@@ -7,3 +7,16 @@ export const convertYYYYMMDD = (date) => {
     const dd = d < 10 ? '0' + d : d;
     return '' + y + mm + dd;
 }
+
+export const getDateTitle = (date) => {
+    const dateStr = convertYYYYMMDD(date);
+    const todayStr = convertYYYYMMDD(new Date());
+    const yesterdayStr = convertYYYYMMDD(new Date().setDate(new Date().getDate() -1));
+    const tomorrow = convertYYYYMMDD(new Date().setDate(new Date().getDate() +1));
+    switch(dateStr) {
+        case todayStr : { return 'Today' }
+        case yesterdayStr: { return 'Yesterday' }
+        case tomorrow: { return 'Tomorrow' }
+        default: { return new Date(date).toLocaleDateString() }
+    }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import * as icons from '../constants/icons';
@@ -7,20 +7,24 @@ import { TaskService } from '../services/task.service';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
 import { Task } from '../models/task';
-import { convertYYYYMMDD } from '../utilities/utility';
+import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: 'tasks.page.html',
   styleUrls: ['tasks.page.scss'],
 })
-export class TasksPage {
+export class TasksPage implements OnInit{
   toolbarText = 'Today';
   settingsIcon = icons.ionIcons.settingsOutline;
   addTaskIcon = icons.ionIcons.addOutline;
   closeIcon = icons.ionIcons.close;
   editTaskIcon = icons.ionIcons.createOutline;
+  prevDayIcon = icons.ionIcons.chevronBackOutline;
+  nextDayIcon = icons.ionIcons.chevronForwardOutline;
   loadedTasks:Task[] = [];
+  loadedDate:number;
+  loadedDatetime: Date;
   constructor(
     private actionSheetController: ActionSheetController,
     private router: Router,
@@ -29,14 +33,21 @@ export class TasksPage {
     private modalController: ModalController
   ) { }
 
+  ngOnInit() {
+    if(this.loadedTasks.length === 0){
+      this.loadedDatetime = new Date();
+      this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
+      this.toolbarText = getDateTitle(this.loadedDatetime);
+      this.loadTasks();
+    }
+  }
+
   ionViewWillEnter() {
     this.loadTasks();
   }
 
   async loadTasks() {
-    const tasks = await this.taskService.getAllTasksByDate(20200516);
-    this.loadedTasks = tasks;
-    console.log(this.loadedTasks);
+    this.loadedTasks = await this.taskService.getAllTasksByDate(this.loadedDate);
   }
 
   segmentChanged(event: any) {
@@ -113,5 +124,20 @@ export class TasksPage {
       dueDate: +convertYYYYMMDD(dueDate)
     }
     await this.taskService.addNewTask(task);
+    this.loadTasks();
+  }
+
+  loadPreviousDay() {
+    this.loadedDatetime = new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() -1));
+    this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
+    this.toolbarText = getDateTitle(this.loadedDatetime);
+    this.loadTasks();
+  }
+
+  loadNextDay() {
+    this.loadedDatetime = new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() + 1));
+    this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
+    this.toolbarText = getDateTitle(this.loadedDatetime);
+    this.loadTasks();
   }
 }

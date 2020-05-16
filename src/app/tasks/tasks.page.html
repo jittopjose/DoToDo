@@ -1,9 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="medium">
     <ion-title>
-      {{toolbarText}}
+      Tasks
     </ion-title>
-    <ion-buttons slot="primary" class="ion-margin-end">
+    <ion-buttons slot="end" class="ion-margin-end">
       <ion-button (click)="onCreateNewTaskTypeSelect($event)">
         <ion-icon slot="icon-only" [src]="addTaskIcon"></ion-icon>
       </ion-button>
@@ -15,18 +15,23 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-segment value="active" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="all">
-      <ion-label>All</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="active">
-      <ion-label>Active</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="done">
-      <ion-label>Done</ion-label>
-    </ion-segment-button>
-  </ion-segment>
   <ion-grid>
+    <ion-row>
+            <ion-col >
+        <ion-segment value="active" (ionChange)="segmentChanged($event)">
+          <ion-segment-button value="all">
+            <ion-label>All</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="active">
+            <ion-label>Active</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="done">
+            <ion-label>Done</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+      
+    </ion-row>
     <ion-row>
       <ion-col>
         <ion-list class="ion-no-margin">
@@ -41,3 +46,20 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+<ion-footer [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-button (click) = "loadPreviousDay()">
+        <ion-icon slot="icon-only" [src]="prevDayIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">
+      {{toolbarText}}
+    </ion-title>
+    <ion-buttons slot="end" >
+      <ion-button (click) = "loadNextDay()">
+        <ion-icon slot="icon-only" [src]="nextDayIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
