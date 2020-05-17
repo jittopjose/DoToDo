@@ -1,45 +1,57 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController, ModalController, AlertController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
-import * as icons from '../constants/icons';
 import { Router } from '@angular/router';
 import { TaskService } from '../services/task.service';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
 import { Task } from '../models/task';
 import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
+import * as icons from '../constants/icons';
+import { presentAlertConfirm } from '../ion-components/alert';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: 'tasks.page.html',
   styleUrls: ['tasks.page.scss'],
 })
-export class TasksPage implements OnInit{
-  toolbarText = 'Today';
+export class TasksPage implements OnInit {
+  toolbarText = '';
+  segmentValue = 'active';
   settingsIcon = icons.ionIcons.settingsOutline;
   addTaskIcon = icons.ionIcons.addOutline;
   closeIcon = icons.ionIcons.close;
-  editTaskIcon = icons.ionIcons.createOutline;
+  editIcon = icons.ionIcons.createOutline;
+  deleteIcon = icons.ionIcons.trashOutline;
   prevDayIcon = icons.ionIcons.chevronBackOutline;
   nextDayIcon = icons.ionIcons.chevronForwardOutline;
-  loadedTasks:Task[] = [];
-  loadedDate:number;
+  loadedTasks: Task[] = [];
+  loadedDate: number;
   loadedDatetime: Date;
   constructor(
     private actionSheetController: ActionSheetController,
     private router: Router,
     private taskService: TaskService,
     private popoverController: PopoverController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
-    if(this.loadedTasks.length === 0){
-      this.loadedDatetime = new Date();
-      this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
-      this.toolbarText = getDateTitle(this.loadedDatetime);
-      this.loadTasks();
-    }
+    this.taskService.tasks
+      .subscribe({
+        next: (tasks: Task[]) => {
+          this.loadedTasks = tasks;
+        }
+      })
+    this.taskService.loadedDateTime.subscribe({
+      next: (dateTime) => {
+        this.loadedDatetime = dateTime;
+        this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
+        this.toolbarText = getDateTitle(this.loadedDatetime);
+        this.loadTasks();
+      }
+    });
   }
 
   ionViewWillEnter() {
@@ -47,12 +59,11 @@ export class TasksPage implements OnInit{
   }
 
   async loadTasks() {
-    this.loadedTasks = await this.taskService.getAllTasksByDate(this.loadedDate);
+    await this.taskService.getAllTasksByDate(this.loadedDate)
   }
 
   segmentChanged(event: any) {
-    //event.detail.value
-    console.log(event.type);
+    this.segmentValue = event.detail.value;
   }
 
   onTaskSelect(taskId: string) {
@@ -64,11 +75,19 @@ export class TasksPage implements OnInit{
       header: 'Task',
       buttons: [{
         text: 'Edit Task',
-        icon: this.editTaskIcon,
+        icon: this.editIcon,
         handler: () => {
           this.router.navigate(['/', 'tasks', 'task-create-edit', taskId]);
         }
-      }, {
+      },
+      {
+        text: 'Delete Task',
+        icon: this.deleteIcon,
+        handler: () => {
+          this.deleteTask(+taskId);
+        }
+      },
+      {
         text: 'Cancel',
         icon: this.closeIcon,
         role: 'cancel'
@@ -78,7 +97,6 @@ export class TasksPage implements OnInit{
   }
 
   onCreateNewTaskTypeSelect(event) {
-    this.taskService.getAllTasksByDate(20200516);
     this.presentCreateNewTaskTypePopover(event).then(
       result => {
         if (result.data) {
@@ -123,21 +141,32 @@ export class TasksPage implements OnInit{
       dueDateTime: new Date(dueDate),
       dueDate: +convertYYYYMMDD(dueDate)
     }
-    await this.taskService.addNewTask(task);
-    this.loadTasks();
+    await this.taskService.addNewTask(task, this.loadedDate);
   }
 
   loadPreviousDay() {
-    this.loadedDatetime = new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() -1));
-    this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
-    this.toolbarText = getDateTitle(this.loadedDatetime);
-    this.loadTasks();
+    this.taskService.setLoadedDateTime(new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() - 1)));
   }
 
   loadNextDay() {
-    this.loadedDatetime = new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() + 1));
-    this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
-    this.toolbarText = getDateTitle(this.loadedDatetime);
-    this.loadTasks();
+    this.taskService.setLoadedDateTime(new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() + 1)));
+  }
+
+  onToggleDone(task: Task, event) {
+    task.done = event.detail.checked;
+    if (task.done) {
+      task.remarks = 'Marked as done';
+    }
+    else {
+      task.remarks = 'Marked as undone';
+    }
+    this.taskService.updateTask(task);
+  }
+
+  async deleteTask(taskId) {
+    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the task?');
+    if (confirm) {
+      await this.taskService.deleteTask(taskId);
+    }
   }
 }

@@ -17,7 +17,7 @@
 <ion-content [fullscreen]="true">
   <ion-grid>
     <ion-row>
-            <ion-col >
+      <ion-col>
         <ion-segment value="active" (ionChange)="segmentChanged($event)">
           <ion-segment-button value="all">
             <ion-label>All</ion-label>
@@ -30,17 +30,26 @@
           </ion-segment-button>
         </ion-segment>
       </ion-col>
-      
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list class="ion-no-margin">
-          <ion-item lines="full" *ngFor="let task of loadedTasks">
-            <span slot="start"><ion-checkbox></ion-checkbox></span>
-            <ion-label (click)="onTaskSelect(task.id)">
-              {{task.name}}
-            </ion-label>
-          </ion-item>
+          <ng-container *ngFor="let task of loadedTasks">
+            <ion-item
+              lines="full"
+              *ngIf="segmentValue === 'all' || segmentValue === 'done' && task.done || segmentValue === 'active' && !task.done"
+            >
+              <span slot="start">
+                <ion-checkbox
+                  [checked]="task.done"
+                  (ionChange)="onToggleDone(task, $event)"
+                ></ion-checkbox>
+              </span>
+              <ion-label (click)="onTaskSelect(task.id)">
+                {{task.name}}
+              </ion-label>
+            </ion-item>
+          </ng-container>
         </ion-list>
       </ion-col>
     </ion-row>
@@ -49,15 +58,15 @@
 <ion-footer [translucent]="true">
   <ion-toolbar color="light">
     <ion-buttons slot="start">
-      <ion-button (click) = "loadPreviousDay()">
+      <ion-button (click)="loadPreviousDay()">
         <ion-icon slot="icon-only" [src]="prevDayIcon"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title class="ion-text-center">
       {{toolbarText}}
     </ion-title>
-    <ion-buttons slot="end" >
-      <ion-button (click) = "loadNextDay()">
+    <ion-buttons slot="end">
+      <ion-button (click)="loadNextDay()">
         <ion-icon slot="icon-only" [src]="nextDayIcon"></ion-icon>
       </ion-button>
     </ion-buttons>

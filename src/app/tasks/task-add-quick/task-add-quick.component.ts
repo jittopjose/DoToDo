@@ -22,7 +22,6 @@ export class TaskAddQuickComponent implements OnInit {
   }
 
   onAddQuickTask(quickTaskAddForm: NgForm) {
-    console.log(quickTaskAddForm.value);
     this.modalController.dismiss({
       name: quickTaskAddForm.value.name,
       dueDate: quickTaskAddForm.value.dueDate
