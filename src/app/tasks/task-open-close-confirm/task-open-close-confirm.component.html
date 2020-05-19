@@ -1,0 +1,28 @@
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>You are about to {{mode === 'done' ? 'mark the task as done' : 'reopen the task'}}. Would you like to add a comment?</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Comment</ion-label>
+          <ion-input  type="text" [(ngModel)]="comment" ></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button type="button" expand="block" fill="outline"  (click) = "onCancel()" color="medium" >Cancel</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button type="button" expand="block" color="medium" (click) = "onToggleDone()" >{{mode}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -12,20 +12,22 @@ import { NgForm } from '@angular/forms';
 })
 export class TaskAddQuickComponent implements OnInit {
   closeIcon = icons.ionIcons.closeOutline;
-  today = new Date().toISOString();
+  today = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
   constructor(private modalController: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onCancel() {
     this.modalController.dismiss(null);
   }
 
   onAddQuickTask(quickTaskAddForm: NgForm) {
-    this.modalController.dismiss({
-      name: quickTaskAddForm.value.name,
-      dueDate: quickTaskAddForm.value.dueDate
-    });
+    if (quickTaskAddForm.valid) {
+      this.modalController.dismiss({
+        name: quickTaskAddForm.value.name,
+        dueDate: quickTaskAddForm.value.dueDate
+      });
+    }
   }
 
 }

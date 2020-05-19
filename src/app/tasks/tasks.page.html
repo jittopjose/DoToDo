@@ -37,17 +37,17 @@
           <ng-container *ngFor="let task of loadedTasks">
             <ion-item
               lines="full"
+              (click)="onTaskSelect(task)"
               *ngIf="segmentValue === 'all' || segmentValue === 'done' && task.done || segmentValue === 'active' && !task.done"
             >
-              <span slot="start">
-                <ion-checkbox
-                  [checked]="task.done"
-                  (ionChange)="onToggleDone(task, $event)"
-                ></ion-checkbox>
-              </span>
-              <ion-label (click)="onTaskSelect(task.id)">
+              <ion-label>
                 {{task.name}}
               </ion-label>
+              <ion-buttons slot="end">
+                <ion-button [color]="task.done ? 'success' : 'danger'">
+                  {{task.done ? 'Done' : 'Open'}}
+                </ion-button>
+              </ion-buttons>
             </ion-item>
           </ng-container>
         </ion-list>

@@ -6,7 +6,7 @@ export const convertYYYYMMDD = (date) => {
     const mm = m < 10 ? '0' + m : m;
     const dd = d < 10 ? '0' + d : d;
     return '' + y + mm + dd;
-}
+};
 
 export const getDateTitle = (date) => {
     const dateStr = convertYYYYMMDD(date);
@@ -19,4 +19,10 @@ export const getDateTitle = (date) => {
         case tomorrow: { return 'Tomorrow' }
         default: { return new Date(date).toLocaleDateString() }
     }
-}
+};
+
+export const isWeekend = (date) => {
+    const day = new Date(date).getDay();
+    const isWeekend = (day === 6) || (day === 0);
+    return isWeekend;
+};

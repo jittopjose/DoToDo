@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, ModalController, AlertController } from '@ionic/angular';
-import { PopoverController } from '@ionic/angular';
+import { ActionSheetController, ModalController, AlertController, PopoverController } from '@ionic/angular';
+
 import { Router } from '@angular/router';
 import { TaskService } from '../services/task.service';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
@@ -9,6 +9,8 @@ import { Task } from '../models/task';
 import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
 import * as icons from '../constants/icons';
 import { presentAlertConfirm } from '../ion-components/alert';
+import { presentPopover } from '../ion-components/popover';
+import { TaskOpenCloseConfirmComponent } from './task-open-close-confirm/task-open-close-confirm.component';
 
 @Component({
   selector: 'app-tasks',
@@ -25,6 +27,8 @@ export class TasksPage implements OnInit {
   deleteIcon = icons.ionIcons.trashOutline;
   prevDayIcon = icons.ionIcons.chevronBackOutline;
   nextDayIcon = icons.ionIcons.chevronForwardOutline;
+  reopenIcon = icons.ionIcons.lockOpenOutline;
+  markAsDoneIcon = icons.ionIcons.checkmarkDoneOutline;
   loadedTasks: Task[] = [];
   loadedDate: number;
   loadedDatetime: Date;
@@ -38,6 +42,8 @@ export class TasksPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log('init');
+    this.initTaskSchedules();
     this.taskService.tasks
       .subscribe({
         next: (tasks: Task[]) => {
@@ -54,6 +60,13 @@ export class TasksPage implements OnInit {
     });
   }
 
+  async initTaskSchedules() {
+    const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
+    if (newTaskCreated) {
+      await this.loadTasks();
+    }
+  }
+
   ionViewWillEnter() {
     this.loadTasks();
   }
@@ -66,60 +79,55 @@ export class TasksPage implements OnInit {
     this.segmentValue = event.detail.value;
   }
 
-  onTaskSelect(taskId: string) {
-    this.presentActionSheet(taskId);
+  onTaskSelect(task: Task) {
+    this.presentActionSheet(task);
   }
 
-  async presentActionSheet(taskId) {
+  async presentActionSheet(task: Task) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Task',
-      buttons: [{
-        text: 'Edit Task',
-        icon: this.editIcon,
-        handler: () => {
-          this.router.navigate(['/', 'tasks', 'task-create-edit', taskId]);
-        }
-      },
-      {
-        text: 'Delete Task',
-        icon: this.deleteIcon,
-        handler: () => {
-          this.deleteTask(+taskId);
-        }
-      },
-      {
-        text: 'Cancel',
-        icon: this.closeIcon,
-        role: 'cancel'
-      }]
+      buttons: [
+        {
+          text: task.done ? 'Reopen Task' : 'Mark As Done',
+          icon: task.done ? this.reopenIcon : this.markAsDoneIcon,
+          handler: () => {
+            this.onToggleDone(task);
+          }
+        },
+        {
+          text: 'Edit Task',
+          icon: this.editIcon,
+          handler: () => {
+            this.router.navigate(['/', 'tasks', 'task-create-edit', task.id]);
+          }
+        },
+        {
+          text: 'Delete Task',
+          icon: this.deleteIcon,
+          handler: () => {
+            this.deleteTask(task.id);
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: this.closeIcon,
+          role: 'cancel'
+        }]
     });
     await actionSheet.present();
   }
 
-  onCreateNewTaskTypeSelect(event) {
-    this.presentCreateNewTaskTypePopover(event).then(
-      result => {
-        if (result.data) {
-          if (result.data.taskType === 'quick') {
-            this.presentCreateNewQuickTaskModal();
-          } else if (result.data.taskType === 'advanced') {
-
-          }
-        }
+  async onCreateNewTaskTypeSelect(event) {
+    const { data } = await presentPopover(this.popoverController, event, CreateTaskTypeComponent);
+    if (data) {
+      if (data.taskType === 'quick') {
+        this.presentCreateNewQuickTaskModal();
+      } else if (data.taskType === 'advanced') {
+        this.router.navigate(['/', 'tasks', 'task-create-edit', 'new']);
       }
-    );
-
+    }
   }
 
-  async presentCreateNewTaskTypePopover(event: any) {
-    const popover = await this.popoverController.create({
-      component: CreateTaskTypeComponent,
-      event: event,
-      translucent: true
-    });
-    await popover.present();
-    return popover.onWillDismiss();
-  }
 
   async presentCreateNewQuickTaskModal() {
     const modal = await this.modalController.create({
@@ -139,7 +147,10 @@ export class TasksPage implements OnInit {
       remarks: '',
       done: false,
       dueDateTime: new Date(dueDate),
-      dueDate: +convertYYYYMMDD(dueDate)
+      dueDate: +convertYYYYMMDD(dueDate),
+      list: 'Personal',
+      repeat: 'no-repeat',
+      refTaskId: -1
     }
     await this.taskService.addNewTask(task, this.loadedDate);
   }
@@ -152,15 +163,22 @@ export class TasksPage implements OnInit {
     this.taskService.setLoadedDateTime(new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() + 1)));
   }
 
-  onToggleDone(task: Task, event) {
-    task.done = event.detail.checked;
-    if (task.done) {
-      task.remarks = 'Marked as done';
+  async onToggleDone(task: Task) {
+    const mode = task.done ? 'reopen' : 'done';
+    const { data } = await presentPopover(this.popoverController, null, TaskOpenCloseConfirmComponent, { mode }, '320px');
+    if (data !== null && data !== undefined) {
+      task.done = !task.done;
+      if (task.done) {
+        task.remarks = data.remarks === '' ? 'Marked as done' : data.remarks;
+      }
+      else {
+        task.remarks = data.remarks === '' ? 'Marked as reopened' : data.remarks;
+      }
+      this.taskService.updateTaskDone(task);
     }
     else {
-      task.remarks = 'Marked as undone';
+      return;
     }
-    this.taskService.updateTask(task);
   }
 
   async deleteTask(taskId) {

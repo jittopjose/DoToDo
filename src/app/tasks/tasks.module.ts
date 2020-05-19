@@ -6,6 +6,7 @@ import { TasksPage } from './tasks.page';
 
 import { HomePageRoutingModule } from './tasks-routing.module';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
+import { TaskOpenCloseConfirmComponent } from './task-open-close-confirm/task-open-close-confirm.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component
   ],
   declarations: [
     TasksPage,
-    TaskAddQuickComponent
+    TaskAddQuickComponent,
+    TaskOpenCloseConfirmComponent
   ]
 })
 export class HomePageModule {}

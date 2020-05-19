@@ -4,5 +4,8 @@ export interface Task {
     remarks: string,
     done: boolean,
     dueDateTime: Date,
-    dueDate: number
+    dueDate: number,
+    repeat: string,
+    list: string,
+    refTaskId: number
 }
