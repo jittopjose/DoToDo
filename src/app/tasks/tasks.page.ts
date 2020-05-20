@@ -10,7 +10,8 @@ import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
 import * as icons from '../constants/icons';
 import { presentAlertConfirm } from '../ion-components/alert';
 import { presentPopover } from '../ion-components/popover';
-import { TaskOpenCloseConfirmComponent } from './task-open-close-confirm/task-open-close-confirm.component';
+import { SettingService } from '../services/setting.service';
+import { Setting } from '../models/setting';
 
 @Component({
   selector: 'app-tasks',
@@ -30,26 +31,34 @@ export class TasksPage implements OnInit {
   reopenIcon = icons.ionIcons.lockOpenOutline;
   markAsDoneIcon = icons.ionIcons.checkmarkDoneOutline;
   loadedTasks: Task[] = [];
+  settings: Setting[] = [];
   loadedDate: number;
   loadedDatetime: Date;
+  today = convertYYYYMMDD(new Date());
   constructor(
     private actionSheetController: ActionSheetController,
     private router: Router,
     private taskService: TaskService,
+    private settingService: SettingService,
     private popoverController: PopoverController,
     private modalController: ModalController,
     private alertController: AlertController
   ) { }
 
   ngOnInit() {
-    console.log('init');
-    this.initTaskSchedules();
+    this.initApp();
+    this.settingService.settings
+      .subscribe({
+        next: (settings: Setting[]) => {
+          this.settings = settings;
+        }
+      });
     this.taskService.tasks
       .subscribe({
         next: (tasks: Task[]) => {
           this.loadedTasks = tasks;
         }
-      })
+      });
     this.taskService.loadedDateTime.subscribe({
       next: (dateTime) => {
         this.loadedDatetime = dateTime;
@@ -60,10 +69,52 @@ export class TasksPage implements OnInit {
     });
   }
 
-  async initTaskSchedules() {
-    const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
-    if (newTaskCreated) {
-      await this.loadTasks();
+  async initApp() {
+    await this.settingService.loadSettings();
+    let taskSchedulerRunDateSetting = await this.settingService.getSetting('taskSchedulerRunDate');
+    if (taskSchedulerRunDateSetting === undefined || taskSchedulerRunDateSetting.value !== this.today) {
+      const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
+      if (newTaskCreated) {
+        await this.loadTasks();
+      }
+      if (taskSchedulerRunDateSetting === undefined) {
+        taskSchedulerRunDateSetting = {
+          id: -1,
+          name: 'taskSchedulerRunDate',
+          value: this.today
+        }
+        await this.settingService.addSetting(taskSchedulerRunDateSetting);
+      } else {
+        taskSchedulerRunDateSetting.value = this.today;
+        await this.settingService.updateSetting(taskSchedulerRunDateSetting);
+      }
+    }
+    let pendingTaskCopyRunDateSetting = await this.settingService.getSetting('pendingTaskCopyRunDate');
+    if (pendingTaskCopyRunDateSetting === undefined || pendingTaskCopyRunDateSetting.value !== this.today) {
+      const pendingTasks = await this.taskService.getPendingTasks();
+      if (pendingTasks.length > 0) {
+        const confirm = await presentAlertConfirm(this.alertController, 'You have unfinished tasks. Do you want to copy them to this day?',
+          'Copy Tasks', 'Ignore', 'Copy', '320px', []);
+        if (confirm.result) {
+          for (const task of pendingTasks) {
+            task.dueDateTime = new Date(task.dueDateTime.setDate(task.dueDateTime.getDate() + 1));
+            task.dueDate = +convertYYYYMMDD(task.dueDateTime);
+            task.refTaskId = -1;
+            await this.taskService.addNewTask(task, this.loadedDate);
+          }
+        }
+      }
+      if (pendingTaskCopyRunDateSetting === undefined) {
+        pendingTaskCopyRunDateSetting = {
+          id: -1,
+          name: 'pendingTaskCopyRunDate',
+          value: this.today
+        }
+        await this.settingService.addSetting(pendingTaskCopyRunDateSetting);
+      } else {
+        pendingTaskCopyRunDateSetting.value = this.today;
+        await this.settingService.updateSetting(pendingTaskCopyRunDateSetting);
+      }
     }
   }
 
@@ -164,26 +215,26 @@ export class TasksPage implements OnInit {
   }
 
   async onToggleDone(task: Task) {
-    const mode = task.done ? 'reopen' : 'done';
-    const { data } = await presentPopover(this.popoverController, null, TaskOpenCloseConfirmComponent, { mode }, '320px');
-    if (data !== null && data !== undefined) {
+
+    const confirm = await presentAlertConfirm(this.alertController, '',
+      'Are you sure?', 'Cancel', task.done ? 'Reopen' : 'Finish', '320px',
+      [{ name: 'comment', type: 'text', placeholder: 'Add a comment..' }]);
+    if (confirm.result) {
       task.done = !task.done;
       if (task.done) {
-        task.remarks = data.remarks === '' ? 'Marked as done' : data.remarks;
+        task.remarks = confirm.data.comment === '' ? 'Marked as done' : confirm.data.comment;
       }
       else {
-        task.remarks = data.remarks === '' ? 'Marked as reopened' : data.remarks;
+        task.remarks = confirm.data.comment === '' ? 'Marked as reopened' : confirm.data.comment;
       }
       this.taskService.updateTaskDone(task);
-    }
-    else {
-      return;
     }
   }
 
   async deleteTask(taskId) {
-    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the task?');
-    if (confirm) {
+    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the task?',
+      'Are you sure?', 'Cancel', 'Okay', null, []);
+    if (confirm.result) {
       await this.taskService.deleteTask(taskId);
     }
   }

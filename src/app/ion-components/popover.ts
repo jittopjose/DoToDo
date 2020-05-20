@@ -6,7 +6,6 @@ export const presentPopover = async (popoverController: PopoverController, event
       componentProps,
       event,
       translucent: true,
-      cssClass: 'task-close-confirm-popover'
     });
     if(width) {
         popover.style.setProperty('--width', width);

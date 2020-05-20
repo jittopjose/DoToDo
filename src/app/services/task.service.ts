@@ -86,6 +86,21 @@ export class TaskService {
 
   }
 
+  async getPendingTasks() {
+    const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
+    const pendingTasks: Task[] = [];
+    await this.dbService.openCursorByIndex('tasks', 'duedate-repeat', IDBKeyRange.only([yesterdayStr, 'no-repeat']), (evt) => {
+      const cursor = (<any>evt.target).result;
+      if (cursor) {
+        if (!cursor.value.done) {
+          pendingTasks.push(cursor.value);
+        }
+        cursor.continue();
+      }
+    });
+    return pendingTasks;
+  }
+
   async addNewTask(task: Task, loadedDate: number) {
     const taskToAdd = { ...task };
     delete taskToAdd.id;
