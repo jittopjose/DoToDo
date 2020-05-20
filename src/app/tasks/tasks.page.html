@@ -18,15 +18,15 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-segment value="active" (ionChange)="segmentChanged($event)">
-          <ion-segment-button value="all">
-            <ion-label>All</ion-label>
+        <ion-segment value="all" (ionChange)="segmentChanged($event)">
+          <ion-segment-button value="pending">
+            <ion-label>Pending ({{(loadedTasks | taskFilter: 'pending').length}})</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="active">
-            <ion-label>Active</ion-label>
+          <ion-segment-button value="all">
+            <ion-label>All ({{(loadedTasks | taskFilter: 'all').length}})</ion-label>
           </ion-segment-button>
           <ion-segment-button value="done">
-            <ion-label>Done</ion-label>
+            <ion-label>Done ({{(loadedTasks | taskFilter: 'done').length}})</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -34,11 +34,11 @@
     <ion-row>
       <ion-col>
         <ion-list class="ion-no-margin">
-          <ng-container *ngFor="let task of loadedTasks">
             <ion-item
+              *ngFor="let task of loadedTasks | taskFilter: segmentValue"
               lines="full"
               (click)="onTaskSelect(task)"
-              *ngIf="segmentValue === 'all' || segmentValue === 'done' && task.done || segmentValue === 'active' && !task.done"
+              
             >
               <ion-label>
                 {{task.name}}
@@ -49,7 +49,6 @@
                 </ion-button>
               </ion-buttons>
             </ion-item>
-          </ng-container>
         </ion-list>
       </ion-col>
     </ion-row>

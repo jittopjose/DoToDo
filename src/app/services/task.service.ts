@@ -27,7 +27,7 @@ export class TaskService {
   }
 
   async executeDailyTaskSchedule() {
-    const primaryTasks = await this.getAllTasksByIndex('refTaskId', -1);
+    const primaryTasks: Task[] = await this.dbService.getAllByIndex('tasks', 'refTaskId', IDBKeyRange.only(-1));
     let newTaskCreated = false;
     for (const task of primaryTasks) {
       const result = await this.processTaskSchedule(task);
@@ -118,14 +118,7 @@ export class TaskService {
   }
 
   async getAllTasksByDate(date: number) {
-    const tasks: Task[] = [];
-    await this.dbService.openCursorByIndex('tasks', 'dueDate', IDBKeyRange.only(date), (evt) => {
-      const cursor = (<any>evt.target).result;
-      if (cursor) {
-        tasks.push(cursor.value);
-        cursor.continue();
-      }
-    });
+    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(date));
     this._tasks.next(tasks);
   }
 
@@ -144,6 +137,10 @@ export class TaskService {
   async updateTaskDone(task: Task) {
     const taskToUpdate = { ...task };
     await this.dbService.update('tasks', taskToUpdate);
+    const tasks = this._tasks.value;
+    const index = tasks.findIndex(p => p.id === task.id);
+    tasks[index] = taskToUpdate;
+    await this._tasks.next(tasks.slice());
   }
 
   async updateTask(task: Task) {

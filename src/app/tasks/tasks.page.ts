@@ -215,19 +215,19 @@ export class TasksPage implements OnInit {
   }
 
   async onToggleDone(task: Task) {
-
+    const taskToUpdate = {...task};
     const confirm = await presentAlertConfirm(this.alertController, '',
       'Are you sure?', 'Cancel', task.done ? 'Reopen' : 'Finish', '320px',
       [{ name: 'comment', type: 'text', placeholder: 'Add a comment..' }]);
     if (confirm.result) {
-      task.done = !task.done;
-      if (task.done) {
-        task.remarks = confirm.data.comment === '' ? 'Marked as done' : confirm.data.comment;
+      taskToUpdate.done = !task.done;
+      if (taskToUpdate.done) {
+        taskToUpdate.remarks = confirm.data.comment === '' ? 'Marked as done' : confirm.data.comment;
       }
       else {
-        task.remarks = confirm.data.comment === '' ? 'Marked as reopened' : confirm.data.comment;
+        taskToUpdate.remarks = confirm.data.comment === '' ? 'Marked as reopened' : confirm.data.comment;
       }
-      this.taskService.updateTaskDone(task);
+      this.taskService.updateTaskDone(taskToUpdate);
     }
   }
 

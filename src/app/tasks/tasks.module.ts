@@ -7,6 +7,7 @@ import { TasksPage } from './tasks.page';
 import { HomePageRoutingModule } from './tasks-routing.module';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
 import { TaskOpenCloseConfirmComponent } from './task-open-close-confirm/task-open-close-confirm.component';
+import { TaskFilterPipe } from '../shared/pipes/task-filter.pipe';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { TaskOpenCloseConfirmComponent } from './task-open-close-confirm/task-op
   declarations: [
     TasksPage,
     TaskAddQuickComponent,
-    TaskOpenCloseConfirmComponent
+    TaskOpenCloseConfirmComponent,
+    TaskFilterPipe
   ]
 })
 export class HomePageModule {}
