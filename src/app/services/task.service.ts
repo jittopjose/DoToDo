@@ -83,6 +83,13 @@ export class TaskService {
           return false;
         }
       }
+      case '1-week' : {
+        if(task.dueDateTime.getDay() === new Date().getDay()) {
+          return true;
+        }  else {
+          return false;
+        }
+      }
       default: return false;
     }
 
@@ -123,7 +130,6 @@ export class TaskService {
   }
 
   async getAllTasksByLoadedDate() {
-    console.log('getAllTasksByLoadedDate');
     const date = +convertYYYYMMDD(this._loadedDateTime.value);
     const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(date));
     this._tasks.next(tasks);

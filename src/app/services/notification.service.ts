@@ -50,7 +50,7 @@ export class NotificationService {
     for (const task of tasks) {
       if (!task.done) {
         const notificationText = this.getTaskDueNotificationText(task);
-        if (notificationText !== '') {
+        if (notificationText !== undefined) {
           if (notifications.findIndex(n => n.text === notificationText) < 0) {
             const notification: Notification = {
               id: -1,

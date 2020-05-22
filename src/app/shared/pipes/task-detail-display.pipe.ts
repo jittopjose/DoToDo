@@ -37,6 +37,7 @@ export class TaskDetailDisplayPipe implements PipeTransform {
       case 'every-day' : return ', Every day'
       case 'every-weekdays' : return ', Every weekdays'
       case 'every-weekends' : return ', Every weekends'
+      case '1-week' : return ', Once in a week'
       default : return '';
     }
   }

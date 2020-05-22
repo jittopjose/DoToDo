@@ -35,7 +35,7 @@ export class SettingService {
         name: 'pendingTaskCopyRunDate',
         value: convertYYYYMMDD(new Date().setDate(new Date().getDate() -1))
       }
-      await this.addSetting(taskSchedulerRunDateSetting);
+      await this.addSetting(pendingTaskCopyRunDateSetting);
     }
     if(autoImportPendingTasksSetting === undefined) {
       autoImportPendingTasksSetting = {
