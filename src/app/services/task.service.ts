@@ -53,7 +53,9 @@ export class TaskService {
           newTask.refTaskId = task.id;
           newTask.dueDateTime = new Date(new Date().setHours(23, 59, 59, 999));
           newTask.dueDate = +convertYYYYMMDD(newTask.dueDateTime);
+          newTask.done = false;
           delete newTask.id;
+
           await this.dbService.add('tasks', newTask);
           newTaskCreated = true;
         }
@@ -87,17 +89,15 @@ export class TaskService {
   }
 
   async getPendingTasks() {
-    const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
     const pendingTasks: Task[] = [];
-    await this.dbService.openCursorByIndex('tasks', 'duedate-repeat', IDBKeyRange.only([yesterdayStr, 'no-repeat']), (evt) => {
-      const cursor = (<any>evt.target).result;
-      if (cursor) {
-        if (!cursor.value.done) {
-          pendingTasks.push(cursor.value);
-        }
-        cursor.continue();
+    const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
+    const tasksFromDb: Task[] = await this.dbService
+    .getAllByIndex('tasks','duedate-repeat', IDBKeyRange.only([yesterdayStr, 'no-repeat']));
+    for(const task of tasksFromDb){
+      if(!task.done){
+        pendingTasks.push(task);
       }
-    });
+    }
     return pendingTasks;
   }
 

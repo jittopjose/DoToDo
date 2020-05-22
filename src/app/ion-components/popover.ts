@@ -7,8 +7,8 @@ export const presentPopover = async (popoverController: PopoverController, event
       event,
       translucent: true,
     });
-    if(width) {
-        popover.style.setProperty('--width', width);
+    if(width !== null) {
+        popover.style.setProperty('--min-width', width);
     }
     await popover.present();
     return popover.onWillDismiss();

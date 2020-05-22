@@ -50,24 +50,27 @@ export class TaskCreateEditPage implements OnInit {
       const hours = new Date(this.taskAddEditForm.value.dueTime).getHours();
       const minutes = new Date(this.taskAddEditForm.value.dueTime).getMinutes();
       const dueDateTime = new Date(new Date(this.taskAddEditForm.value.dueDate).setHours(hours, minutes, 0, 0));
-      const taskId = this.task ? this.task.id : -1;
-      const remarks = this.task ? this.task.remarks : '';
-      const refTaskId = this.task ? this.task.refTaskId : -1
-      const task: Task = {
-        id: taskId,
-        name: this.taskAddEditForm.value.name,
-        remarks,
-        done: false,
-        dueDateTime,
-        dueDate: +convertYYYYMMDD(dueDateTime),
-        list: this.taskAddEditForm.value.list,
-        repeat: this.taskAddEditForm.value.repeat,
-        refTaskId
-      }
-      if (task.id === -1) {
+      if (this.task === undefined) {
+        const task: Task = {
+          id: -1,
+          name: this.taskAddEditForm.value.name,
+          remarks: '',
+          done: false,
+          dueDateTime,
+          dueDate: +convertYYYYMMDD(dueDateTime),
+          list: this.taskAddEditForm.value.list,
+          repeat: this.taskAddEditForm.value.repeat,
+          refTaskId: -1
+        }
         this.taskService.addNewTask(task, +convertYYYYMMDD(new Date()));
       } else {
-        this.taskService.updateTask(task);
+        this.task.dueDateTime = dueDateTime;
+        this.task.dueDate = +convertYYYYMMDD(dueDateTime);
+        this.task.name = this.taskAddEditForm.value.name;
+        this.task.list = this.taskAddEditForm.value.list;
+        this.task.repeat = this.taskAddEditForm.value.repeat;
+        this.task.refTaskId = -1;
+        this.taskService.updateTask(this.task);
       }
       this.navController.navigateBack('/tasks');
     }

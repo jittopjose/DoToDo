@@ -4,11 +4,15 @@
       Tasks
     </ion-title>
     <ion-buttons slot="end" class="ion-margin-end">
+      <ion-button fill="clear" size="large" (click)="showNotifications($event)">
+        <ion-icon  [src] = "notificationsIcon"></ion-icon>
+        <ion-badge color="primary">{{notificationsCount}}</ion-badge>
+    </ion-button>
       <ion-button (click)="onCreateNewTaskTypeSelect($event)">
         <ion-icon slot="icon-only" [src]="addTaskIcon"></ion-icon>
       </ion-button>
-      <ion-button>
-        <ion-icon slot="icon-only" [src]="settingsIcon"></ion-icon>
+      <ion-button [routerLink]="['/tasks/settings']">
+        <ion-icon slot="icon-only" [src]="settingsIcon"   ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -40,14 +44,12 @@
               (click)="onTaskSelect(task)"
               
             >
-              <ion-label>
-                {{task.name}}
+              <ion-label class="ion-text-wrap">
+                <h2>{{task.name}}</h2>
+                <p> {{task | taskDetailDisplay}} </p>
               </ion-label>
-              <ion-buttons slot="end">
-                <ion-button [color]="task.done ? 'success' : 'danger'">
-                  {{task.done ? 'Done' : 'Open'}}
-                </ion-button>
-              </ion-buttons>
+              <ion-badge [color]="task.done ? 'success' : 'danger'" slot="end">{{task | taskStatusDisplay}}</ion-badge>
+              
             </ion-item>
         </ion-list>
       </ion-col>

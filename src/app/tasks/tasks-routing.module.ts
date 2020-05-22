@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: 'task-create-edit/:taskId',
     loadChildren: () => import('./task-create-edit/task-create-edit.module').then( m => m.TaskCreateEditPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
   }
 ];
 

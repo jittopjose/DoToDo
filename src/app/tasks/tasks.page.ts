@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActionSheetController, ModalController, AlertController, PopoverController } from '@ionic/angular';
 
 import { Router } from '@angular/router';
@@ -12,13 +12,16 @@ import { presentAlertConfirm } from '../ion-components/alert';
 import { presentPopover } from '../ion-components/popover';
 import { SettingService } from '../services/setting.service';
 import { Setting } from '../models/setting';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationService } from '../services/notification.service';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: 'tasks.page.html',
   styleUrls: ['tasks.page.scss'],
 })
-export class TasksPage implements OnInit {
+export class TasksPage implements OnInit, OnDestroy {
   toolbarText = '';
   segmentValue = 'active';
   settingsIcon = icons.ionIcons.settingsOutline;
@@ -30,16 +33,25 @@ export class TasksPage implements OnInit {
   nextDayIcon = icons.ionIcons.chevronForwardOutline;
   reopenIcon = icons.ionIcons.lockOpenOutline;
   markAsDoneIcon = icons.ionIcons.checkmarkDoneOutline;
+  notificationsIcon = icons.ionIcons.notifications;
+  notificationsOutlineIcon = icons.ionIcons.notificationsOutline;
   loadedTasks: Task[] = [];
   settings: Setting[] = [];
   loadedDate: number;
   loadedDatetime: Date;
+  notificationsCount = 0;
   today = convertYYYYMMDD(new Date());
+  notificationSub: Subscription;
+  settingSub: Subscription;
+  taskSub: Subscription;
+  loadedDateTimeSub: Subscription;
+  intervalSub: Subscription;
   constructor(
     private actionSheetController: ActionSheetController,
     private router: Router,
     private taskService: TaskService,
     private settingService: SettingService,
+    private notificationService: NotificationService,
     private popoverController: PopoverController,
     private modalController: ModalController,
     private alertController: AlertController
@@ -47,19 +59,24 @@ export class TasksPage implements OnInit {
 
   ngOnInit() {
     this.initApp();
-    this.settingService.settings
+    this.notificationSub = this.notificationService.notifications.subscribe({
+      next: (notifications) => {
+        this.notificationsCount = notifications.length;
+      }
+    });
+    this.settingSub = this.settingService.settings
       .subscribe({
         next: (settings: Setting[]) => {
           this.settings = settings;
         }
       });
-    this.taskService.tasks
+    this.taskSub = this.taskService.tasks
       .subscribe({
         next: (tasks: Task[]) => {
           this.loadedTasks = tasks;
         }
       });
-    this.taskService.loadedDateTime.subscribe({
+    this.loadedDateTimeSub = this.taskService.loadedDateTime.subscribe({
       next: (dateTime) => {
         this.loadedDatetime = dateTime;
         this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
@@ -70,7 +87,21 @@ export class TasksPage implements OnInit {
   }
 
   async initApp() {
+    await this.settingService.initSettings();
     await this.settingService.loadSettings();
+    const initNotificationsSummaryRunDateSetting = this.settings.find(s => s.name === 'initNotificationsSummaryRunDate');
+    if(initNotificationsSummaryRunDateSetting.value !== this.today) {
+      this.notificationService.loadInitNotificationsSummary();
+      initNotificationsSummaryRunDateSetting.value = this.today;
+      await this.settingService.updateSetting(initNotificationsSummaryRunDateSetting);
+    }
+    this.notificationService.reloadNotifications();
+    const reloadInterval = interval(1000 * 60 * 15);
+    this.intervalSub = reloadInterval.subscribe({
+      next: () => {
+        this.notificationService.reloadNotifications();
+      }
+    });    
     let taskSchedulerRunDateSetting = await this.settingService.getSetting('taskSchedulerRunDate');
     if (taskSchedulerRunDateSetting === undefined || taskSchedulerRunDateSetting.value !== this.today) {
       const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
@@ -100,6 +131,7 @@ export class TasksPage implements OnInit {
             task.dueDateTime = new Date(task.dueDateTime.setDate(task.dueDateTime.getDate() + 1));
             task.dueDate = +convertYYYYMMDD(task.dueDateTime);
             task.refTaskId = -1;
+            task.done = false;
             await this.taskService.addNewTask(task, this.loadedDate);
           }
         }
@@ -179,6 +211,11 @@ export class TasksPage implements OnInit {
     }
   }
 
+  async showNotifications(event) {
+    await presentPopover(this.popoverController, event, NotificationsComponent, null, '320px');
+    await this.notificationService.deactivateAllNotifications();
+  }
+
 
   async presentCreateNewQuickTaskModal() {
     const modal = await this.modalController.create({
@@ -237,5 +274,12 @@ export class TasksPage implements OnInit {
     if (confirm.result) {
       await this.taskService.deleteTask(taskId);
     }
+  }
+
+  ngOnDestroy() {
+    this.notificationSub.unsubscribe();
+    this.settingSub.unsubscribe();
+    this.taskSub.unsubscribe();
+    this.loadedDateTimeSub.unsubscribe();
   }
 }

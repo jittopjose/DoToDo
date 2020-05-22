@@ -1,0 +1,22 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Settings
+    </ion-title>
+    
+  </ion-toolbar>
+</ion-header>
+<ion-list>
+  <ion-item>
+    <ion-label>Auto import pending tasks</ion-label>
+    <ion-toggle slot="end" [(checked)] = "autoImportPendingTasks" 
+    (ionChange) = "onSettingChange('autoImportPendingTasks', $event)" color="light"></ion-toggle>
+  </ion-item>
+</ion-list>
+
+<ion-content>
+
+</ion-content>

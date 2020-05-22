@@ -1,0 +1,10 @@
+<ion-content>
+  <ion-list>
+    <ion-item *ngIf="notifications.length === 0" lines="none" >
+      <ion-label>No notifications!!</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let notification of notifications" lines="none" >
+      <ion-label class="ion-text-wrap">{{notification.text}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

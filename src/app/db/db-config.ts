@@ -13,7 +13,7 @@ export function migrationFactory() {
 
 export const dbConfig: DBConfig  = {
     name: 'iWillDoDB',
-    version: 1,
+    version: 2,
     objectStoresMeta: [{
       store: 'tasks',
       storeConfig: { keyPath: 'id', autoIncrement: true },
@@ -34,6 +34,14 @@ export const dbConfig: DBConfig  = {
       storeSchema: [
         { name: 'name', keypath: 'name', options: { unique: false } },
         { name: 'value', keypath: 'value', options: { unique: false } }
+      ]
+    },
+    {
+      store: 'notifications',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'name', keypath: 'name', options: { unique: false } },
+        { name: 'active', keypath: 'active', options: { unique: false } }
       ]
     }],
     migrationFactory
