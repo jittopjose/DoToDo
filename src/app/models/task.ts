@@ -7,5 +7,6 @@ export interface Task {
     dueDate: number,
     repeat: string,
     list: string,
-    refTaskId: number
+    refTaskId: number,
+    type: string
 }

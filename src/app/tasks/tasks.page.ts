@@ -238,7 +238,8 @@ export class TasksPage implements OnInit, OnDestroy {
       dueDate: +convertYYYYMMDD(dueDate),
       list: 'Personal',
       repeat: 'no-repeat',
-      refTaskId: -1
+      refTaskId: -1,
+      type: 'live'
     }
     await this.taskService.addNewTask(task, this.loadedDate);
   }

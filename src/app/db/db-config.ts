@@ -6,14 +6,13 @@ export function migrationFactory() {
         const store = transaction.objectStore('tasks');
         store.createIndex('duedate-repeat', ['dueDate', 'repeat'], { unique: false });
         store.createIndex('duedate-reftaskid', ['dueDate', 'refTaskId'], { unique: false });
-        
       }
     };
   }
 
 export const dbConfig: DBConfig  = {
-    name: 'iWillDoDB',
-    version: 2,
+    name: 'DoToDoDB',
+    version: 1,
     objectStoresMeta: [{
       store: 'tasks',
       storeConfig: { keyPath: 'id', autoIncrement: true },
@@ -25,7 +24,8 @@ export const dbConfig: DBConfig  = {
         { name: 'dueDate', keypath: 'dueDate', options: { unique: false } },
         { name: 'repeat', keypath: 'repeat', options: { unique: false } },
         { name: 'list', keypath: 'list', options: { unique: false } },
-        { name: 'refTaskId', keypath: 'refTaskId', options: { unique: false } }
+        { name: 'refTaskId', keypath: 'refTaskId', options: { unique: false } },
+        { name: 'type', keypath: 'type', options: { unique: false } }
       ]
     },
     {

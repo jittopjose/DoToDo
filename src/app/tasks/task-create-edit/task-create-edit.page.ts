@@ -60,7 +60,8 @@ export class TaskCreateEditPage implements OnInit {
           dueDate: +convertYYYYMMDD(dueDateTime),
           list: this.taskAddEditForm.value.list,
           repeat: this.taskAddEditForm.value.repeat,
-          refTaskId: -1
+          refTaskId: -1,
+          type: 'live'
         }
         this.taskService.addNewTask(task, +convertYYYYMMDD(new Date()));
       } else {

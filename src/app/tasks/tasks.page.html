@@ -37,7 +37,11 @@
     </ion-row>
     <ion-row>
       <ion-col>
+        
         <ion-list class="ion-no-margin">
+            <ion-item>
+              <ion-label class="ion-text-center" *ngIf="(loadedTasks | taskFilter: segmentValue).length === 0 ">No tasks to display</ion-label>
+            </ion-item>
             <ion-item
               *ngFor="let task of loadedTasks | taskFilter: segmentValue"
               lines="full"
