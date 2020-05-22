@@ -4,6 +4,7 @@ import { Notification } from '../models/notification';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { convertYYYYMMDD } from '../utilities/utility';
 import { Task } from '../models/task';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,9 @@ import { Task } from '../models/task';
 export class NotificationService {
   private _notifications = new BehaviorSubject<Notification[]>([]);
 
-  constructor(private dbService: NgxIndexedDBService) { }
+  constructor(
+    private dbService: NgxIndexedDBService,
+    private taskService: TaskService) { }
 
   get notifications() {
     return this._notifications.asObservable();
@@ -58,6 +61,7 @@ export class NotificationService {
             const id = await this.dbService.add('notifications', notification);
             notification.id = id;
             notifications.push(notification);
+            this.taskService.getAllTasksByLoadedDate();
           }
         }
       }
@@ -71,13 +75,16 @@ export class NotificationService {
     const minutesNow = new Date().getTime() / 1000 / 60;
     const minutesTaskDue = task.dueDateTime.getTime() / 1000 / 60;
     if (minutesTaskDue > minutesNow) {
-      if ((minutesTaskDue - minutesNow) < 60) {
-        return `Task: "${task.name}" is due in ${Math.floor(minutesTaskDue - minutesNow)} min.`;
+      if((minutesTaskDue - minutesNow) < 15) {
+        return `Task: "${task.name}" is due in less than 15 min.`;
+      }else if((minutesTaskDue - minutesNow) < 30) {
+        return `Task: "${task.name}" is due in less than half an hour.`;
+      } else if ((minutesTaskDue - minutesNow) < 60) {
+        return `Task: "${task.name}" is due in less than an hour.`;
       }
     } else {
       return `Task: "${task.name}" is overdue`;
     }
-    return '';
   }
 
   async deactivateAllNotifications() {

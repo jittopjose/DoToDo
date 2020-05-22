@@ -49,7 +49,7 @@ export class TaskCreateEditPage implements OnInit {
     if (this.taskAddEditForm.valid) {
       const hours = new Date(this.taskAddEditForm.value.dueTime).getHours();
       const minutes = new Date(this.taskAddEditForm.value.dueTime).getMinutes();
-      const dueDateTime = new Date(new Date(this.taskAddEditForm.value.dueDate).setHours(hours, minutes, 0, 0));
+      const dueDateTime = new Date(new Date(this.taskAddEditForm.value.dueDate).setHours(hours, minutes, 59, 999));
       if (this.task === undefined) {
         const task: Task = {
           id: -1,

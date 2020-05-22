@@ -41,6 +41,7 @@ export class TasksPage implements OnInit, OnDestroy {
   loadedDatetime: Date;
   notificationsCount = 0;
   today = convertYYYYMMDD(new Date());
+  minutesNow = new Date().getTime() / 1000 / 60;
   notificationSub: Subscription;
   settingSub: Subscription;
   taskSub: Subscription;
@@ -90,18 +91,22 @@ export class TasksPage implements OnInit, OnDestroy {
     await this.settingService.initSettings();
     await this.settingService.loadSettings();
     const initNotificationsSummaryRunDateSetting = this.settings.find(s => s.name === 'initNotificationsSummaryRunDate');
-    if(initNotificationsSummaryRunDateSetting.value !== this.today) {
+    if (initNotificationsSummaryRunDateSetting.value !== this.today) {
       this.notificationService.loadInitNotificationsSummary();
       initNotificationsSummaryRunDateSetting.value = this.today;
       await this.settingService.updateSetting(initNotificationsSummaryRunDateSetting);
     }
     this.notificationService.reloadNotifications();
-    const reloadInterval = interval(1000 * 60 * 15);
+    const reloadInterval = interval(1000 * 60);
     this.intervalSub = reloadInterval.subscribe({
       next: () => {
+        if (this.today !== convertYYYYMMDD(new Date())) {
+          location.reload();
+        }
+        this.minutesNow = new Date().getTime() / 1000 / 60;
         this.notificationService.reloadNotifications();
       }
-    });    
+    });
     let taskSchedulerRunDateSetting = await this.settingService.getSetting('taskSchedulerRunDate');
     if (taskSchedulerRunDateSetting === undefined || taskSchedulerRunDateSetting.value !== this.today) {
       const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
@@ -253,7 +258,7 @@ export class TasksPage implements OnInit, OnDestroy {
   }
 
   async onToggleDone(task: Task) {
-    const taskToUpdate = {...task};
+    const taskToUpdate = { ...task };
     const confirm = await presentAlertConfirm(this.alertController, '',
       'Are you sure?', 'Cancel', task.done ? 'Reopen' : 'Finish', '320px',
       [{ name: 'comment', type: 'text', placeholder: 'Add a comment..' }]);

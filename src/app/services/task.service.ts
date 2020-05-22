@@ -122,6 +122,13 @@ export class TaskService {
     this._tasks.next(tasks);
   }
 
+  async getAllTasksByLoadedDate() {
+    console.log('getAllTasksByLoadedDate');
+    const date = +convertYYYYMMDD(this._loadedDateTime.value);
+    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(date));
+    this._tasks.next(tasks);
+  }
+
   async getAllTasksByIndex(index, value) {
     const tasks: Task[] = [];
     await this.dbService.openCursorByIndex('tasks', index, IDBKeyRange.only(value), (evt) => {

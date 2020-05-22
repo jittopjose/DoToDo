@@ -7,8 +7,8 @@ import { convertYYYYMMDD } from 'src/app/utilities/utility';
 })
 export class TaskDetailDisplayPipe implements PipeTransform {
 
-  transform(task: Task): string {
-    const minutesNow = new Date().getTime() / 1000/ 60;
+  transform(task: Task, minutesNow: number): string {
+    //const minutesNow = new Date().getTime() / 1000/ 60;
     const minutesTaskDue = task.dueDateTime.getTime() / 1000/ 60;
     const todayStr = +convertYYYYMMDD(new Date());
     const displayString = task.list + this.getRepeatText(task.repeat);
@@ -22,9 +22,9 @@ export class TaskDetailDisplayPipe implements PipeTransform {
   getDueText(minutesNow: number, minutesTaskDue: number) {
     if(minutesTaskDue > minutesNow) {
       if((minutesTaskDue - minutesNow) < 60 ) {
-        return `, Due in ${Math.floor(minutesTaskDue - minutesNow)} min.`;
+        return `, Due in ${Math.round(minutesTaskDue - minutesNow)} min.`;
       }else {
-        return `, Due in ${Math.floor((minutesTaskDue - minutesNow)/60)} hr.`;
+        return `, Due in ${Math.round((minutesTaskDue - minutesNow)/60)} hr.`;
       }
 
     }
