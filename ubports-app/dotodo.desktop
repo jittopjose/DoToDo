@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Do To Do
+Exec=webapp-container --app-id="dotodo.jitto" $@ www/index.html
+Icon=assets/dotodo.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
