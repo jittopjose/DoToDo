@@ -8,5 +8,6 @@ export interface Task {
     repeat: string,
     list: string,
     refTaskId: number,
-    type: string
+    type: string,
+    detail: any
 }

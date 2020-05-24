@@ -61,7 +61,8 @@ export class TaskCreateEditPage implements OnInit {
           list: this.taskAddEditForm.value.list,
           repeat: this.taskAddEditForm.value.repeat,
           refTaskId: -1,
-          type: 'live'
+          type: 'live',
+          detail: {}
         }
         this.taskService.addNewTask(task, +convertYYYYMMDD(new Date()));
       } else {

@@ -244,7 +244,8 @@ export class TasksPage implements OnInit, OnDestroy {
       list: 'Personal',
       repeat: 'no-repeat',
       refTaskId: -1,
-      type: 'live'
+      type: 'live',
+      detail: {}
     }
     await this.taskService.addNewTask(task, this.loadedDate);
   }
