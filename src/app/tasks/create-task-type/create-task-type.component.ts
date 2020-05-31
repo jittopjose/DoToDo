@@ -11,6 +11,7 @@ import * as icons from '../../constants/icons';
 export class CreateTaskTypeComponent implements OnInit {
   quickTaskIcon = icons.ionIcons.colorWandOutline;
   advancedTaskIcon = icons.ionIcons.gridOutline;
+  checklistIcon = icons.ionIcons.checkboxOutline;
   constructor(private popoverController: PopoverController) { }
 
   ngOnInit() {}

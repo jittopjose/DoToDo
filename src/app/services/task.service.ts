@@ -10,12 +10,17 @@ import { convertYYYYMMDD, isWeekend } from '../utilities/utility';
 export class TaskService {
 
   private _tasks = new BehaviorSubject<Task[]>([]);
+  private _checklists = new BehaviorSubject<Task[]>([]);
   private _loadedDateTime = new BehaviorSubject<Date>(new Date());
 
   constructor(private dbService: NgxIndexedDBService) { }
 
   get tasks() {
     return this._tasks.asObservable();
+  }
+
+  get checklists() {
+    return this._checklists.asObservable();
   }
 
   get loadedDateTime() {
@@ -27,7 +32,7 @@ export class TaskService {
   }
 
   async executeDailyTaskSchedule() {
-    const primaryTasks: Task[] = await this.dbService.getAllByIndex('tasks', 'refTaskId', IDBKeyRange.only(-1));
+    const primaryTasks: Task[] = await this.dbService.getAllByIndex('tasks', 'reftaskid-type-repeating', IDBKeyRange.only([-1, 'live', 'true']));
     let newTaskCreated = false;
     for (const task of primaryTasks) {
       const result = await this.processTaskSchedule(task);
@@ -46,7 +51,7 @@ export class TaskService {
     const todayStr = +convertYYYYMMDD(new Date());
     if (task.dueDate < todayStr && task.repeat !== 'no-repeat') {
       const existingTasks = await this.dbService
-        .getAllByIndex('tasks', 'duedate-reftaskid', IDBKeyRange.only([todayStr, task.id]));
+        .getAllByIndex('tasks', 'duedate-reftaskid-type', IDBKeyRange.only([todayStr, task.id, 'live']));
       if (existingTasks.length === 0) {
         if (this.canCreateNewTask(task)) {
           const newTask = { ...task };
@@ -99,7 +104,7 @@ export class TaskService {
     const pendingTasks: Task[] = [];
     const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
     const tasksFromDb: Task[] = await this.dbService
-    .getAllByIndex('tasks','duedate-repeat', IDBKeyRange.only([yesterdayStr, 'no-repeat']));
+    .getAllByIndex('tasks','duedate-repeat-type', IDBKeyRange.only([yesterdayStr, 'no-repeat', 'live']));
     for(const task of tasksFromDb){
       if(!task.done){
         pendingTasks.push(task);
@@ -120,18 +125,18 @@ export class TaskService {
   }
 
   async getTaskById(taskId: number) {
-    const task: Task = await this.dbService.getByID('tasks', +taskId);
+    const task: Task = await this.dbService.getByIndex('tasks', 'id-type', IDBKeyRange.only([+taskId, 'live']));
     return task;
   }
 
   async getAllTasksByDate(date: number) {
-    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(date));
+    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'duedate-type', IDBKeyRange.only([date, 'live']));
     this._tasks.next(tasks);
   }
 
   async getAllTasksByLoadedDate() {
     const date = +convertYYYYMMDD(this._loadedDateTime.value);
-    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(date));
+    const tasks: Task[] = await this.dbService.getAllByIndex('tasks', 'duedate-type', IDBKeyRange.only([date, 'live']));
     this._tasks.next(tasks);
   }
 
@@ -159,7 +164,7 @@ export class TaskService {
   async updateTask(task: Task) {
     const taskToUpdate = { ...task };
     if (task.refTaskId >= 0) {
-      const refTask = await this.getTaskById(task.refTaskId);
+      const refTask: Task = await this.dbService.getByID('tasks', +task.refTaskId);
       refTask.refTaskId = -2;
       this.dbService.update('tasks', refTask);
       taskToUpdate.refTaskId = -1;
@@ -171,6 +176,36 @@ export class TaskService {
     await this.dbService.delete('tasks', taskId);
     const tasks = this._tasks.value.filter(t => t.id !== taskId);
     this._tasks.next(tasks);
+
+  }
+
+  async addNewChecklist(checklist: Task) {
+    const checklistToAdd = { ...checklist };
+    delete checklistToAdd.id;
+    const checklistId = await this.dbService.add('tasks', checklistToAdd);
+    checklist.id = checklistId;
+    const checklists = this._checklists.value;
+    this._checklists.next(checklists.concat(checklist));
+  }
+
+  async getAllChecklists() {
+    const checklists: Task[] = await this.dbService.getAllByIndex('tasks', 'type', IDBKeyRange.only('checklist'));
+    this._checklists.next([...checklists]);
+  }
+
+  async updateChecklist(checklist: Task) {
+    await this.dbService.update('tasks', checklist);
+  }
+
+  async getChecklistById(checklistId: number) {
+    const checklist: Task = await this.dbService.getByIndex('tasks', 'id-type', IDBKeyRange.only([+checklistId, 'checklist']));
+    return checklist;
+  }
+
+  async deleteChecklist(checklistId: number) {
+    await this.dbService.delete('tasks', checklistId);
+    const checklist = this._checklists.value.filter(t => t.id !== checklistId);
+    this._checklists.next(checklist);
 
   }
 }

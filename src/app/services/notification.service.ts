@@ -25,7 +25,7 @@ export class NotificationService {
     const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
     let overdueCount = 0;
     const tasksFromDb: Task[] = await this.dbService
-      .getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(yesterdayStr));
+      .getAllByIndex('tasks', 'duedate-type', IDBKeyRange.only([yesterdayStr, 'live']));
     for (const task of tasksFromDb) {
       if (!task.done) {
         overdueCount++;
@@ -46,7 +46,7 @@ export class NotificationService {
     const todayStr = +convertYYYYMMDD(new Date());
     const notifications: Notification[] = await this.dbService.getAll('notifications');
     const tasks: Task[] = await this.dbService
-      .getAllByIndex('tasks', 'dueDate', IDBKeyRange.only(todayStr));
+      .getAllByIndex('tasks', 'duedate-type', IDBKeyRange.only([todayStr, 'live']));
     for (const task of tasks) {
       if (!task.done) {
         const notificationText = this.getTaskDueNotificationText(task);

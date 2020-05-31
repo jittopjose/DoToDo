@@ -35,6 +35,7 @@ export class TasksPage implements OnInit, OnDestroy {
   markAsDoneIcon = icons.ionIcons.checkmarkDoneOutline;
   notificationsIcon = icons.ionIcons.notifications;
   notificationsOutlineIcon = icons.ionIcons.notificationsOutline;
+  checklistIcon = icons.ionIcons.checkboxOutline;
   loadedTasks: Task[] = [];
   settings: Setting[] = [];
   loadedDate: number;
@@ -212,6 +213,8 @@ export class TasksPage implements OnInit, OnDestroy {
         this.presentCreateNewQuickTaskModal();
       } else if (data.taskType === 'advanced') {
         this.router.navigate(['/', 'tasks', 'task-create-edit', 'new']);
+      } else if (data.taskType === 'checklist') {
+        this.router.navigate(['/', 'tasks', 'checklist-create-edit', 'new']);
       }
     }
   }
@@ -243,6 +246,7 @@ export class TasksPage implements OnInit, OnDestroy {
       dueDate: +convertYYYYMMDD(dueDate),
       list: 'Personal',
       repeat: 'no-repeat',
+      repeating: 'false',
       refTaskId: -1,
       type: 'live',
       detail: {}

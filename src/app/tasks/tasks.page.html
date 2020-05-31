@@ -4,6 +4,10 @@
       Tasks
     </ion-title>
     <ion-buttons slot="end" class="ion-margin-end">
+      
+      <ion-button [routerLink]="['/tasks/checklists']">
+        <ion-icon [src] = "checklistIcon"></ion-icon>
+      </ion-button>
       <ion-button fill="clear" size="large" (click)="showNotifications($event)">
         <ion-icon  [src] = "notificationsIcon"></ion-icon>
         <ion-badge color="primary">{{notificationsCount}}</ion-badge>

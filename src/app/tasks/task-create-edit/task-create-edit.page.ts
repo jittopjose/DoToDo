@@ -60,19 +60,21 @@ export class TaskCreateEditPage implements OnInit {
           dueDate: +convertYYYYMMDD(dueDateTime),
           list: this.taskAddEditForm.value.list,
           repeat: this.taskAddEditForm.value.repeat,
+          repeating: this.taskAddEditForm.value.repeat === 'no-repeat' ? 'false' : 'true',
           refTaskId: -1,
           type: 'live',
           detail: {}
         }
-        this.taskService.addNewTask(task, +convertYYYYMMDD(new Date()));
+        await this.taskService.addNewTask(task, +convertYYYYMMDD(new Date()));
       } else {
         this.task.dueDateTime = dueDateTime;
         this.task.dueDate = +convertYYYYMMDD(dueDateTime);
         this.task.name = this.taskAddEditForm.value.name;
         this.task.list = this.taskAddEditForm.value.list;
         this.task.repeat = this.taskAddEditForm.value.repeat;
+        this.task.repeating = this.taskAddEditForm.value.repeat === 'no-repeat' ? 'false' : 'true';
         this.task.refTaskId = -1;
-        this.taskService.updateTask(this.task);
+        await this.taskService.updateTask(this.task);
       }
       this.navController.navigateBack('/tasks');
     }

@@ -11,6 +11,8 @@ import { TaskFilterPipe } from '../shared/pipes/task-filter.pipe';
 import { TaskStatusDisplayPipe } from '../shared/pipes/task-status-display.pipe';
 import { TaskDetailDisplayPipe } from '../shared/pipes/task-detail-display.pipe';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
+
 
 
 @NgModule({
@@ -25,6 +27,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
     TaskAddQuickComponent,
     TaskOpenCloseConfirmComponent,
     NotificationsComponent,
+    CreateTaskTypeComponent,
     TaskFilterPipe,
     TaskStatusDisplayPipe,
     TaskDetailDisplayPipe

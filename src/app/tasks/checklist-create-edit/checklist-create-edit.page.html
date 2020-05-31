@@ -1,0 +1,79 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks/checklists"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{titleText}}
+    </ion-title>
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #checklistAddEditForm="ngForm" (ngSubmit) = "onAddEditChecklist()" >
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            
+            <ion-label position="floating">Checklist Name</ion-label>
+            <ion-input type="text" [ngModel] = "checklist?.name" name="name" required maxlength="40"></ion-input>
+          
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-card>
+            <ion-card-content>
+              
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="9">
+                    <ion-item>
+                    <ion-label position="floating">Checklist Item</ion-label>
+                    <ion-input name="checklistItem" type="text" [(ngModel)] = "checklistItem"></ion-input>
+                  </ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-buttons class="ion-padding-top">
+                      <ion-button (click)="onAddChecklistItem()">
+                        <ion-icon slot="icon-only" [src] = "addChecklistItemIcon"></ion-icon>
+                      </ion-button>
+                    </ion-buttons>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-list>
+                      <ion-item lines="none" *ngFor="let checklistItem of checklistItemArray; let i = index">
+                        <ion-label>{{checklistItem.name}}</ion-label>
+                        <ion-checkbox slot="start" name="checklistItemChecked" disabled = "true"></ion-checkbox>
+                        <ion-buttons slot="end">
+                          <ion-button (click)="onDeleteChecklistItem(i)">
+                            <ion-icon slot="icon-only" [src] = "deleteChecklistItemIcon" ></ion-icon>
+                          </ion-button>
+                        </ion-buttons>
+                        
+                      </ion-item>
+                    </ion-list>
+                  </ion-col>
+                </ion-row>
+                
+              </ion-grid>
+            
+              
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-button type="submit" [disabled] = "!checklistAddEditForm.valid || checklistItemArray.length === 0"  expand="block" color="medium" >{{checklist?.id ? 'Update Checklist' : 'Add Checklist'}}</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

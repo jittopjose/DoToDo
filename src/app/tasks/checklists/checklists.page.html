@@ -1,0 +1,55 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Checklists
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/tasks/checklist-create-edit/new']"  >
+        <ion-icon slot="icon-only" [src]="addChecklistIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card  *ngFor="let checklist of loadedChecklists; let i = index;">
+    <ion-card-header  class="ion-no-padding">
+      <ion-item lines="full" *ngIf="checklist.expanded">
+        <ion-buttons slot="end">
+          <ion-button [routerLink]="['/', 'tasks', 'checklist-create-edit', checklist.id]"  >
+            <ion-icon slot="icon-only" [src]="editChecklistIcon"></ion-icon>
+          </ion-button>
+          <ion-button (click) ="onDeleteChecklist(checklist.id)"  >
+            <ion-icon slot="icon-only" [src] = "deleteChecklistIcon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item lines="none" (click)="toggleExpandItem(i)">
+        <ion-label class="ion-text-wrap">
+          <h2> {{checklist.name}} </h2>
+          <p> {{checklist | checklistSummaryDisplay: lastUpdatedTime}} </p>
+        </ion-label>
+        <ion-badge [color]="checklist.done ? 'success' : 'danger'" slot="end">{{checklist | checklistStatusDisplay: lastUpdatedTime}}</ion-badge>
+      </ion-item>
+    </ion-card-header>
+    <app-expandable expandHeight="750px" [expanded]="checklist.expanded">
+    <ion-card-content>
+      
+      <ion-list>
+        <ion-item lines="none" *ngFor="let checklistItem of checklist.detail.checklistItems">
+          <ion-label> {{checklistItem.name}} </ion-label>
+          <ion-checkbox [(ngModel)] = "checklistItem.done" (ionChange) = "onChecklistItemUpdate(checklist)" slot="start"></ion-checkbox>
+        </ion-item>
+        
+      </ion-list>
+    
+    </ion-card-content>
+  </app-expandable>
+  </ion-card>
+  
+  
+  
+</ion-content>

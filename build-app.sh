@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ionic build
+ionic build --prod
 
 sed -i 's/type="module"//g' ./www/index.html
 

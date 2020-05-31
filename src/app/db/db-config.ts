@@ -6,13 +6,21 @@ export function migrationFactory() {
         const store = transaction.objectStore('tasks');
         store.createIndex('duedate-repeat', ['dueDate', 'repeat'], { unique: false });
         store.createIndex('duedate-reftaskid', ['dueDate', 'refTaskId'], { unique: false });
+      },
+      2: (db, transaction) => {
+        const store = transaction.objectStore('tasks');
+        store.createIndex('duedate-reftaskid-type', ['dueDate', 'refTaskId', 'type'], { unique: false });
+        store.createIndex('duedate-repeat-type', ['dueDate', 'repeat', 'type'], { unique: false });
+        store.createIndex('duedate-type', ['dueDate', 'type'], { unique: false });
+        store.createIndex('id-type', ['id', 'type'], { unique: false });
+        store.createIndex('reftaskid-type-repeating', ['refTaskId', 'type', 'repeating'], { unique: false });
       }
     };
   }
 
 export const dbConfig: DBConfig  = {
     name: 'DoToDoDB',
-    version: 1,
+    version: 2,
     objectStoresMeta: [{
       store: 'tasks',
       storeConfig: { keyPath: 'id', autoIncrement: true },
@@ -25,7 +33,9 @@ export const dbConfig: DBConfig  = {
         { name: 'repeat', keypath: 'repeat', options: { unique: false } },
         { name: 'list', keypath: 'list', options: { unique: false } },
         { name: 'refTaskId', keypath: 'refTaskId', options: { unique: false } },
-        { name: 'type', keypath: 'type', options: { unique: false } }
+        { name: 'type', keypath: 'type', options: { unique: false } },
+        { name: 'repeating', keypath: 'repeating', options: { unique: false } },
+        { name: 'detail', keypath: 'detail', options: { unique: false } }
       ]
     },
     {
