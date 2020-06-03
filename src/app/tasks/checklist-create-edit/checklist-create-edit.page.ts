@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, IonInput } from '@ionic/angular';
 import * as icons from '../../constants/icons';
 import { Task } from '../../models/task';
 import { NgForm } from '@angular/forms';
@@ -14,6 +14,7 @@ import { TaskService } from '../../services/task.service';
 })
 export class ChecklistCreateEditPage implements OnInit {
   @ViewChild('checklistAddEditForm', { static: true }) checklistAddEditForm: NgForm;
+  @ViewChild('checklistItemRef') checklistItemRef: IonInput;
   backButtonIcon = icons.ionIcons.arrowBackOutline;
   addChecklistItemIcon = icons.ionIcons.addOutline;
   deleteChecklistItemIcon = icons.ionIcons.closeOutline;
@@ -48,6 +49,7 @@ export class ChecklistCreateEditPage implements OnInit {
     if (this.checklistItem !== undefined && this.checklistItem.trim() !== '') {
       this.checklistItemArray.push({ name: this.checklistItem, done: false });
       this.checklistItem = '';
+      this.checklistItemRef.setFocus();
     }
   }
 
