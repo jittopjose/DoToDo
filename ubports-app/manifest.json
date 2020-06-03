@@ -1,6 +1,6 @@
 {
     "name": "dotodo.jitto",
-    "description": "A Simple TODO App",
+    "description": "A Simple TODO and Checklist App",
     "architecture": "@CLICK_ARCH@",
     "title": "Do To Do",
     "hooks": {

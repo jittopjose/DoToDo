@@ -12,7 +12,6 @@ export function migrationFactory() {
         store.createIndex('duedate-reftaskid-type', ['dueDate', 'refTaskId', 'type'], { unique: false });
         store.createIndex('duedate-repeat-type', ['dueDate', 'repeat', 'type'], { unique: false });
         store.createIndex('duedate-type', ['dueDate', 'type'], { unique: false });
-        store.createIndex('id-type', ['id', 'type'], { unique: false });
         store.createIndex('reftaskid-type-repeating', ['refTaskId', 'type', 'repeating'], { unique: false });
       }
     };

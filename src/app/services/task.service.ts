@@ -125,8 +125,11 @@ export class TaskService {
   }
 
   async getTaskById(taskId: number) {
-    const task: Task = await this.dbService.getByIndex('tasks', 'id-type', IDBKeyRange.only([+taskId, 'live']));
-    return task;
+    const task: Task = await this.dbService.getByID('tasks', +taskId);
+    if(task && task.type === 'live') {
+      return task;
+    }
+    return null;
   }
 
   async getAllTasksByDate(date: number) {
@@ -198,8 +201,11 @@ export class TaskService {
   }
 
   async getChecklistById(checklistId: number) {
-    const checklist: Task = await this.dbService.getByIndex('tasks', 'id-type', IDBKeyRange.only([+checklistId, 'checklist']));
-    return checklist;
+    const checklist: Task = await this.dbService.getByID('tasks', +checklistId);
+    if(checklist && checklist.type === 'checklist') {
+      return checklist;
+    }
+    return null;
   }
 
   async deleteChecklist(checklistId: number) {
