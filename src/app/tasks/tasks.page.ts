@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActionSheetController, ModalController, AlertController, PopoverController } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { ActionSheetController, ModalController, AlertController, PopoverController, GestureController } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 import { TaskService } from '../services/task.service';
@@ -21,9 +21,11 @@ import { Subscription, interval } from 'rxjs';
   templateUrl: 'tasks.page.html',
   styleUrls: ['tasks.page.scss'],
 })
-export class TasksPage implements OnInit, OnDestroy {
+export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('taskList', {read: ElementRef}) taskList: ElementRef;
   toolbarText = '';
   segmentValue = 'active';
+  showSpinner = false;
   settingsIcon = icons.ionIcons.settingsOutline;
   addTaskIcon = icons.ionIcons.addOutline;
   closeIcon = icons.ionIcons.close;
@@ -56,7 +58,8 @@ export class TasksPage implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private popoverController: PopoverController,
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private gestureController: GestureController
   ) { }
 
   ngOnInit() {
@@ -88,7 +91,25 @@ export class TasksPage implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit(){
+    const gesture = this.gestureController.create({
+      gestureName: 'change-day',
+      el: this.taskList.nativeElement,
+      onEnd: ev => {
+        if(ev.deltaX > 50){
+          this.loadPreviousDay();
+        }
+        if(ev.deltaX < -50) {
+          this.loadNextDay();
+        }
+      }
+    }, true);
+  
+    gesture.enable();
+  }
+
   async initApp() {
+    this.showSpinner = true;
     await this.settingService.initSettings();
     await this.settingService.loadSettings();
     const initNotificationsSummaryRunDateSetting = this.settings.find(s => s.name === 'initNotificationsSummaryRunDate');
@@ -154,6 +175,7 @@ export class TasksPage implements OnInit, OnDestroy {
         await this.settingService.updateSetting(pendingTaskCopyRunDateSetting);
       }
     }
+    this.showSpinner = false;
   }
 
   ionViewWillEnter() {

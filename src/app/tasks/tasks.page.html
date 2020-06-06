@@ -1,10 +1,11 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="medium">
+  <ion-toolbar color="light">
     <ion-title>
       Tasks
     </ion-title>
+
     <ion-buttons slot="end" class="ion-margin-end">
-      
+      <ion-spinner *ngIf="showSpinner" name="dots"></ion-spinner>
       <ion-button [routerLink]="['/tasks/checklists']">
         <ion-icon [src] = "checklistIcon"></ion-icon>
       </ion-button>
@@ -22,7 +23,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content #taskList [fullscreen]="true">
   <ion-grid>
     <ion-row>
       <ion-col>
