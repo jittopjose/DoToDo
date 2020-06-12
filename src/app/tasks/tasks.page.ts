@@ -104,7 +104,6 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }, true);
-  
     gesture.enable();
   }
 

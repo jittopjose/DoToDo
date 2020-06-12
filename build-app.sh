@@ -10,5 +10,5 @@ cp -r ./www/* ./ubports-app/www/
 
 cd ./ubports-app
 
-clickable desktop
+clickable
 

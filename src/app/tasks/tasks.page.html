@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="light">
+  <ion-toolbar color="dark">
     <ion-title>
       Tasks
     </ion-title>
@@ -48,10 +48,10 @@
               <ion-label class="ion-text-center" >No tasks to display</ion-label>
             </ion-item>
             <ion-item
-              *ngFor="let task of loadedTasks | taskFilter: segmentValue"
+              *ngFor="let task of loadedTasks | taskFilter: segmentValue;  let i = index"
               lines="full"
               (click)="onTaskSelect(task)"
-              
+              [style.--animation-order]="i"
             >
               <ion-label class="ion-text-wrap">
                 <h2>{{task.name}}</h2>
