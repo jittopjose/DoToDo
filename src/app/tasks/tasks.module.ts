@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TasksPage } from './tasks.page';
@@ -31,6 +31,9 @@ import { CreateTaskTypeComponent } from './create-task-type/create-task-type.com
     TaskFilterPipe,
     TaskStatusDisplayPipe,
     TaskDetailDisplayPipe
+  ],
+  providers: [
+    DatePipe
   ]
 })
 export class HomePageModule {}

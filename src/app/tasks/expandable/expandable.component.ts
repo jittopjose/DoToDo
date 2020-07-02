@@ -9,10 +9,12 @@ export class ExpandableComponent implements AfterViewInit {
   @ViewChild('expandWrapper', { read: ElementRef }) expandWrapper: ElementRef;
   @Input() expanded = false;
   @Input() expandHeight = '150px';
+  @Input() collapsedHeight = '0px';
 
   constructor(public renderer: Renderer2) {}
 
   ngAfterViewInit() {
     this.renderer.setStyle(this.expandWrapper.nativeElement, 'max-height', this.expandHeight);
+    this.renderer.setStyle(this.expandWrapper.nativeElement, 'min-height', this.collapsedHeight);
   }
 }

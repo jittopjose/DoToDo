@@ -38,6 +38,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   notificationsIcon = icons.ionIcons.notifications;
   notificationsOutlineIcon = icons.ionIcons.notificationsOutline;
   checklistIcon = icons.ionIcons.checkboxOutline;
+  noteIcon = icons.ionIcons.documentTextOutline;
   loadedTasks: Task[] = [];
   settings: Setting[] = [];
   loadedDate: number;
@@ -130,7 +131,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     });
     let taskSchedulerRunDateSetting = await this.settingService.getSetting('taskSchedulerRunDate');
     if (taskSchedulerRunDateSetting === undefined || taskSchedulerRunDateSetting.value !== this.today) {
-      const newTaskCreated = await this.taskService.executeDailyTaskSchedule();
+      const newTaskCreated = await this.taskService.executeDailyTaskSchedule(new Date());
       if (newTaskCreated) {
         await this.loadTasks();
       }

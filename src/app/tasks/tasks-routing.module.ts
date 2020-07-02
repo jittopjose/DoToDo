@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'checklist-create-edit/:checklistId',
     loadChildren: () => import('./checklist-create-edit/checklist-create-edit.module').then( m => m.ChecklistCreateEditPageModule)
+  },
+  {
+    path: 'notes',
+    loadChildren: () => import('./notes/notes.module').then( m => m.NotesPageModule)
   }
 ];
 

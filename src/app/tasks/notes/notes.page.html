@@ -1,0 +1,58 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Notes
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click) = "createNewNote()">
+        <ion-icon slot="icon-only"  [src]="addNoteIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item *ngIf="loadedNotes.length === 0" class="ion-text-center">
+    <ion-label  >No notes to display</ion-label>
+  </ion-item>
+  <ion-card *ngFor="let note of loadedNotes; let i = index;">
+    <ion-card-header  class="ion-no-padding">
+      <ion-item lines="full" *ngIf="note.expanded">
+        <ion-buttons slot="end">
+          <ion-button  (click) = "toggleNoteEditMode(i)">
+            <ion-icon slot="icon-only" [src] = "editNoteIcon"></ion-icon>
+          </ion-button>
+          <ion-button  >
+            <ion-icon slot="icon-only" [src] = "deleteNoteIcon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item lines="none" (click)="toggleExpandItem(i)">
+        <ion-label class="ion-text-wrap">
+          <h2 *ngIf="!note.noteEditMode" > {{note.name}}</h2>
+          <ion-item *ngIf="note.noteEditMode" >
+            <ion-label position="floating">Note name</ion-label>
+          <ion-input [(ngModel)] = "note.name"></ion-input>
+          </ion-item>
+          <p> Last updated: {{note.detail.lastUpdated | date: 'medium'}} </p>
+        </ion-label>
+        
+      </ion-item>
+    </ion-card-header>
+    <app-expandable expandHeight="750px" collapsedHeight="50px" [expanded]="note.expanded">
+    <ion-card-content>
+      
+        <div *ngIf="!note.noteEditMode" style="white-space: pre-wrap;">
+          {{note.detail.noteText}}
+        </div>
+        <ion-item *ngIf="note.noteEditMode">
+          <ion-textarea autofocus="true" [(ngModel)] = "note.detail.noteText" autoGrow="true" placeholder="Add your note here..."></ion-textarea>
+        </ion-item>
+    
+    </ion-card-content>
+  </app-expandable>
+  </ion-card>
+</ion-content>

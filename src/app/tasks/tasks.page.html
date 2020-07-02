@@ -6,6 +6,9 @@
 
     <ion-buttons slot="end" class="ion-margin-end">
       <ion-spinner *ngIf="showSpinner" name="dots"></ion-spinner>
+      <ion-button [routerLink]="['/tasks/notes']">
+        <ion-icon [src] = "noteIcon"></ion-icon>
+      </ion-button>
       <ion-button [routerLink]="['/tasks/checklists']">
         <ion-icon [src] = "checklistIcon"></ion-icon>
       </ion-button>

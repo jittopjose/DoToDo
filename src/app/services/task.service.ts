@@ -11,6 +11,7 @@ export class TaskService {
 
   private _tasks = new BehaviorSubject<Task[]>([]);
   private _checklists = new BehaviorSubject<Task[]>([]);
+  private _notes = new BehaviorSubject<Task[]>([]);
   private _loadedDateTime = new BehaviorSubject<Date>(new Date());
 
   constructor(private dbService: NgxIndexedDBService) { }
@@ -23,6 +24,10 @@ export class TaskService {
     return this._checklists.asObservable();
   }
 
+  get notes() {
+    return this._notes.asObservable();
+  }
+
   get loadedDateTime() {
     return this._loadedDateTime.asObservable();
   }
@@ -31,11 +36,11 @@ export class TaskService {
     this._loadedDateTime.next(date);
   }
 
-  async executeDailyTaskSchedule() {
+  async executeDailyTaskSchedule(processDate: Date) {
     const primaryTasks: Task[] = await this.dbService.getAllByIndex('tasks', 'reftaskid-type-repeating', IDBKeyRange.only([-1, 'live', 'true']));
     let newTaskCreated = false;
     for (const task of primaryTasks) {
-      const result = await this.processTaskSchedule(task);
+      const result = await this.processTaskSchedule(task, processDate);
       newTaskCreated = newTaskCreated || result;
     }
     return newTaskCreated;
@@ -45,10 +50,10 @@ export class TaskService {
     return new Promise(resolve => setTimeout(resolve, 300));
   }
 
-  async processTaskSchedule(task: Task) {
+  async processTaskSchedule(task: Task, processDate: Date) {
     let newTaskCreated = false;
     await this.delay();
-    const todayStr = +convertYYYYMMDD(new Date());
+    const todayStr = +convertYYYYMMDD(new Date(processDate));
     if (task.dueDate < todayStr && task.repeat !== 'no-repeat') {
       const existingTasks = await this.dbService
         .getAllByIndex('tasks', 'duedate-reftaskid-type', IDBKeyRange.only([todayStr, task.id, 'live']));
@@ -56,7 +61,11 @@ export class TaskService {
         if (this.canCreateNewTask(task)) {
           const newTask = { ...task };
           newTask.refTaskId = task.id;
-          newTask.dueDateTime = new Date(new Date().setHours(23, 59, 59, 999));
+          newTask.dueDateTime = new Date(new Date(processDate)
+                                .setHours(
+                                  task.dueDateTime.getHours(),
+                                  task.dueDateTime.getMinutes(),
+                                  task.dueDateTime.getSeconds(), 999));
           newTask.dueDate = +convertYYYYMMDD(newTask.dueDateTime);
           newTask.done = false;
           delete newTask.id;
@@ -214,4 +223,38 @@ export class TaskService {
     this._checklists.next(checklist);
 
   }
+
+  async addNewNote(note: Task) {
+    const noteToAdd = { ...note };
+    delete noteToAdd.id;
+    const noteId = await this.dbService.add('tasks', noteToAdd);
+    note.id = noteId;
+    const notes = this._notes.value;
+    this._notes.next(notes.concat(note));
+  }
+
+  async getAllNotes() {
+    const notes: Task[] = await this.dbService.getAllByIndex('tasks', 'type', IDBKeyRange.only('note'));
+    this._notes.next([...notes]);
+  }
+
+  async updateNote(note: Task) {
+    await this.dbService.update('tasks', note);
+  }
+
+  async getNoteById(noteId: number) {
+    const note: Task = await this.dbService.getByID('tasks', +noteId);
+    if(note && note.type === 'note') {
+      return note;
+    }
+    return null;
+  }
+
+  async deleteNote(noteId: number) {
+    await this.dbService.delete('tasks', noteId);
+    const note = this._notes.value.filter(t => t.id !== noteId);
+    this._notes.next(note);
+
+  }
+
 }
