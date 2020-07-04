@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { AlertController } from '@ionic/angular';
 
 import * as icons from '../../constants/icons';
 import { Task } from '../../models/task';
-import { TaskService } from 'src/app/services/task.service';
+import { TaskService } from '../../services/task.service';
 import { Subscription } from 'rxjs';
-import { convertYYYYMMDD } from 'src/app/utilities/utility';
+import { convertYYYYMMDD } from '../../utilities/utility';
+import { presentAlertConfirm } from '../../ion-components/alert';
 
-interface  NoteForDisplay extends Task {
+
+interface NoteForDisplay extends Task {
   expanded: boolean;
   noteEditMode: boolean;
 }
@@ -22,20 +25,29 @@ export class NotesPage implements OnInit {
   addNoteIcon = icons.ionIcons.addOutline;
   editNoteIcon = icons.ionIcons.createOutline;
   deleteNoteIcon = icons.ionIcons.trashOutline;
+  saveNoteIcon = icons.ionIcons.checkmarkOutline;
   loadedNotes: NoteForDisplay[] = [];
   notesSub: Subscription;
+  newTaskCreatedDatetime = new Date();
 
   constructor(
     private taskService: TaskService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
     this.notesSub = this.taskService.notes
       .subscribe({
         next: (notes: NoteForDisplay[]) => {
-          this.loadedNotes = notes.map((note) => {
-            note.expanded = false;
+          this.loadedNotes = notes.map((note, i) => {
+            if (note.dueDateTime === this.newTaskCreatedDatetime) {
+              note.expanded = true;
+              note.noteEditMode = false;
+            }
+            else {
+              note.expanded = false;
+            }
             return note;
           });
         }
@@ -43,7 +55,12 @@ export class NotesPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.newTaskCreatedDatetime = new Date();
     this.loadNotes();
+  }
+
+  ionViewWillLeave() {
+    this.savePendingChanges();
   }
 
   async loadNotes() {
@@ -51,21 +68,31 @@ export class NotesPage implements OnInit {
   }
 
   toggleExpandItem(index) {
-    if(this.loadedNotes[index].noteEditMode) {
+    if (this.loadedNotes[index].noteEditMode) {
       return;
     }
-    this.loadedNotes[index].expanded = !this.loadedNotes[index].expanded
-    if(!this.loadedNotes[index].expanded) {
-      this.loadedNotes[index].noteEditMode = false;
+    if (!this.loadedNotes[index].expanded) {
+      this.savePendingChanges();
     }
+    this.loadedNotes[index].expanded = !this.loadedNotes[index].expanded;
   }
 
   toggleNoteEditMode(index) {
     this.loadedNotes[index].noteEditMode = !this.loadedNotes[index].noteEditMode;
   }
 
+  async saveNote(index) {
+    this.loadedNotes[index].noteEditMode = false;
+    const noteToUpdate = { ...this.loadedNotes[index] }
+    noteToUpdate.detail.lastUpdated = new Date();
+    delete noteToUpdate.expanded;
+    delete noteToUpdate.noteEditMode;
+    await this.taskService.updateNote(noteToUpdate);
+  }
+
   async createNewNote() {
-    const note: Task = {
+    await this.savePendingChanges();
+    const noteToAdd: Task = {
       id: -1,
       name: this.datePipe.transform(new Date(), 'MMM dd, yyyy'),
       remarks: '',
@@ -78,11 +105,29 @@ export class NotesPage implements OnInit {
       refTaskId: -888,
       type: 'note',
       detail: {
-        noteText:'',
+        noteText: '',
         lastUpdated: new Date()
       }
     };
-    await this.taskService.addNewNote(note);
+    this.newTaskCreatedDatetime = noteToAdd.dueDateTime;
+    await this.taskService.addNewNote(noteToAdd);
+  }
+
+  async savePendingChanges() {
+    for (const [i, note] of this.loadedNotes.entries()) {
+      if (note.noteEditMode) {
+        await this.saveNote(i);
+      }
+      note.expanded = false;
+    }
+  }
+
+  async onDeleteNote(noteId) {
+    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the note?',
+      'Are you sure?', 'Cancel', 'Okay', null, []);
+    if (confirm.result) {
+      await this.taskService.deleteNote(noteId);
+    }
   }
 
 }

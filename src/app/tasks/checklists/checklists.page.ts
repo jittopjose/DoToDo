@@ -35,7 +35,7 @@ export class ChecklistsPage implements OnInit {
       .subscribe({
         next: (checklists: ChecklistForDisplay[]) => {
           this.loadedChecklists = checklists.map((checklist) => {
-            checklist.expanded = false; 
+            checklist.expanded = false;
             return checklist;
           });
         }

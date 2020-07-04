@@ -202,7 +202,7 @@ export class TaskService {
 
   async getAllChecklists() {
     const checklists: Task[] = await this.dbService.getAllByIndex('tasks', 'type', IDBKeyRange.only('checklist'));
-    this._checklists.next([...checklists]);
+    this._checklists.next([...checklists].reverse());
   }
 
   async updateChecklist(checklist: Task) {
@@ -230,12 +230,13 @@ export class TaskService {
     const noteId = await this.dbService.add('tasks', noteToAdd);
     note.id = noteId;
     const notes = this._notes.value;
-    this._notes.next(notes.concat(note));
+    this._notes.next(notes.concat(note).reverse());
+    return note.id;
   }
 
   async getAllNotes() {
     const notes: Task[] = await this.dbService.getAllByIndex('tasks', 'type', IDBKeyRange.only('note'));
-    this._notes.next([...notes]);
+    this._notes.next([...notes].reverse());
   }
 
   async updateNote(note: Task) {

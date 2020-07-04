@@ -18,6 +18,7 @@ export class ChecklistCreateEditPage implements OnInit {
   backButtonIcon = icons.ionIcons.arrowBackOutline;
   addChecklistItemIcon = icons.ionIcons.addOutline;
   deleteChecklistItemIcon = icons.ionIcons.closeOutline;
+  saveChecklistIcon = icons.ionIcons.checkmarkOutline;
   titleText = 'Add New Checklist';
   checklist: Task;
   checklistItem: string;

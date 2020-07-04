@@ -5,20 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { NotesPageRoutingModule } from './notes-routing.module';
-import { ExpandableComponent } from '../expandable/expandable.component';
 
 import { NotesPage } from './notes.page';
+import { SharedModule } from '../../shared/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NotesPageRoutingModule
+    NotesPageRoutingModule,
+    SharedModule
   ],
   declarations: [
-    NotesPage,
-    ExpandableComponent
+    NotesPage
   ]
 })
 export class NotesPageModule {}

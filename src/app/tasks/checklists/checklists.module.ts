@@ -7,20 +7,20 @@ import { IonicModule } from '@ionic/angular';
 import { ChecklistsPageRoutingModule } from './checklists-routing.module';
 
 import { ChecklistsPage } from './checklists.page';
-import { ExpandableComponent } from '../expandable/expandable.component';
-import { ChecklistStatusDisplayPipe } from 'src/app/shared/pipes/checklist-status-display.pipe';
-import { ChecklistSummaryDisplayPipe } from 'src/app/shared/pipes/checklist-summary-display.pipe';
+import { ChecklistStatusDisplayPipe } from '../../shared/pipes/checklist-status-display.pipe';
+import { ChecklistSummaryDisplayPipe } from '../../shared/pipes/checklist-summary-display.pipe';
+import { SharedModule } from '../../shared/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ChecklistsPageRoutingModule
+    ChecklistsPageRoutingModule,
+    SharedModule
   ],
   declarations: [
     ChecklistsPage,
-    ExpandableComponent,
     ChecklistStatusDisplayPipe,
     ChecklistSummaryDisplayPipe
   ]

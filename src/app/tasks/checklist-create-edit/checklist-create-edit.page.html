@@ -6,7 +6,11 @@
     <ion-title>
       {{titleText}}
     </ion-title>
-    
+    <ion-buttons slot="end">
+      <ion-button  (click) = "onAddEditChecklist()" [disabled] = "!checklistAddEditForm.valid || checklistItemArray.length === 0" >
+        <ion-icon slot="icon-only" [src]="saveChecklistIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
