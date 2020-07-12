@@ -73,7 +73,6 @@ export class TaskCreateEditPage implements OnInit {
         this.task.list = this.taskAddEditForm.value.list;
         this.task.repeat = this.taskAddEditForm.value.repeat;
         this.task.repeating = this.taskAddEditForm.value.repeat === 'no-repeat' ? 'false' : 'true';
-        this.task.refTaskId = -1;
         await this.taskService.updateTask(this.task);
       }
       this.navController.navigateBack('/tasks');

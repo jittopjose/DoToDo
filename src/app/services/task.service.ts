@@ -185,6 +185,10 @@ export class TaskService {
   }
 
   async deleteTask(taskId: number) {
+    const task: Task = await this.dbService.getByID('tasks', +taskId);
+    const refTask: Task = await this.dbService.getByID('tasks', +task.refTaskId);
+    refTask.refTaskId = -2;
+    await this.dbService.update('tasks', refTask);
     await this.dbService.delete('tasks', taskId);
     const tasks = this._tasks.value.filter(t => t.id !== taskId);
     this._tasks.next(tasks);
