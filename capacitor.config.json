@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "iWillDo",
+  "appId": "io.dotodo.jitto",
+  "appName": "Do To Do",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
@@ -9,5 +9,6 @@
       "launchShowDuration": 0
     }
   },
-  "cordova": {}
+  "cordova": {},
+"linuxAndroidStudioPath": "/snap/bin/android-studio"
 }
