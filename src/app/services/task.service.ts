@@ -62,10 +62,10 @@ export class TaskService {
           const newTask = { ...task };
           newTask.refTaskId = task.id;
           newTask.dueDateTime = new Date(new Date(processDate)
-                                .setHours(
-                                  task.dueDateTime.getHours(),
-                                  task.dueDateTime.getMinutes(),
-                                  task.dueDateTime.getSeconds(), 999));
+            .setHours(
+              task.dueDateTime.getHours(),
+              task.dueDateTime.getMinutes(),
+              task.dueDateTime.getSeconds(), 999));
           newTask.dueDate = +convertYYYYMMDD(newTask.dueDateTime);
           newTask.done = false;
           delete newTask.id;
@@ -97,10 +97,10 @@ export class TaskService {
           return false;
         }
       }
-      case '1-week' : {
-        if(task.dueDateTime.getDay() === new Date().getDay()) {
+      case '1-week': {
+        if (task.dueDateTime.getDay() === new Date().getDay()) {
           return true;
-        }  else {
+        } else {
           return false;
         }
       }
@@ -113,9 +113,9 @@ export class TaskService {
     const pendingTasks: Task[] = [];
     const yesterdayStr = +convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
     const tasksFromDb: Task[] = await this.dbService
-    .getAllByIndex('tasks','duedate-repeat-type', IDBKeyRange.only([yesterdayStr, 'no-repeat', 'live']));
-    for(const task of tasksFromDb){
-      if(!task.done){
+      .getAllByIndex('tasks', 'duedate-repeat-type', IDBKeyRange.only([yesterdayStr, 'no-repeat', 'live']));
+    for (const task of tasksFromDb) {
+      if (!task.done) {
         pendingTasks.push(task);
       }
     }
@@ -135,7 +135,7 @@ export class TaskService {
 
   async getTaskById(taskId: number) {
     const task: Task = await this.dbService.getByID('tasks', +taskId);
-    if(task && task.type === 'live') {
+    if (task && task.type === 'live') {
       return task;
     }
     return null;
@@ -187,8 +187,10 @@ export class TaskService {
   async deleteTask(taskId: number) {
     const task: Task = await this.dbService.getByID('tasks', +taskId);
     const refTask: Task = await this.dbService.getByID('tasks', +task.refTaskId);
-    refTask.refTaskId = -2;
-    await this.dbService.update('tasks', refTask);
+    if (refTask !== undefined && refTask !== null) {
+      refTask.refTaskId = -2;
+      await this.dbService.update('tasks', refTask);
+    }
     await this.dbService.delete('tasks', taskId);
     const tasks = this._tasks.value.filter(t => t.id !== taskId);
     this._tasks.next(tasks);
@@ -215,7 +217,7 @@ export class TaskService {
 
   async getChecklistById(checklistId: number) {
     const checklist: Task = await this.dbService.getByID('tasks', +checklistId);
-    if(checklist && checklist.type === 'checklist') {
+    if (checklist && checklist.type === 'checklist') {
       return checklist;
     }
     return null;
@@ -249,7 +251,7 @@ export class TaskService {
 
   async getNoteById(noteId: number) {
     const note: Task = await this.dbService.getByID('tasks', +noteId);
-    if(note && note.type === 'note') {
+    if (note && note.type === 'note') {
       return note;
     }
     return null;
