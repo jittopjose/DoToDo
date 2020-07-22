@@ -15,6 +15,7 @@ import { Setting } from '../models/setting';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationService } from '../services/notification.service';
 import { Subscription, interval } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-tasks',
@@ -60,7 +61,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     private popoverController: PopoverController,
     private modalController: ModalController,
     private alertController: AlertController,
-    private gestureController: GestureController
+    private gestureController: GestureController,
+    private datePipe: DatePipe
   ) { }
 
   ngOnInit() {
@@ -86,7 +88,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       next: (dateTime) => {
         this.loadedDatetime = dateTime;
         this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
-        this.toolbarText = getDateTitle(this.loadedDatetime);
+        this.toolbarText = getDateTitle(this.loadedDatetime, this.datePipe);
         this.loadTasks();
       }
     });
