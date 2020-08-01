@@ -50,19 +50,48 @@
             <ion-item *ngIf="(loadedTasks | taskFilter: segmentValue).length === 0 ">
               <ion-label class="ion-text-center" >No tasks to display</ion-label>
             </ion-item>
-            <ion-item
-              *ngFor="let task of loadedTasks | taskFilter: segmentValue;  let i = index"
-              lines="full"
-              (click)="onTaskSelect(task)"
-              [style.--animation-order]="i"
-            >
-              <ion-label class="ion-text-wrap">
-                <h2>{{task.name}}</h2>
-                <p> {{task | taskDetailDisplay : minutesNow}} </p>
-              </ion-label>
-              <ion-badge [color]="task.done ? 'success' : 'danger'" slot="end">{{task | taskStatusDisplay}}</ion-badge>
-              
-            </ion-item>
+
+            <ion-card *ngFor="let task of loadedTasks | taskFilter: segmentValue;  let i = index">
+              <ion-card-header class="ion-no-padding">
+                <ion-item lines="full" *ngIf="task.expanded">
+                  <ion-buttons slot="end">
+                    <ion-button (click) = "onToggleDone(task)">
+                      <ion-icon slot="icon-only" [src]="task.done ? this.reopenIcon : this.markAsDoneIcon"></ion-icon>
+                    </ion-button>
+
+                    <ion-button (click) = "editTask(task.id)">
+                      <ion-icon slot="icon-only" [src]="editIcon"></ion-icon>
+                    </ion-button>
+                    
+                    <ion-button (click)="deleteTask(task.id)">
+                      <ion-icon slot="icon-only" [src]="deleteIcon"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+                <ion-item lines="none" (click)="toggleExpandItem(i)">
+                  <ion-label class="ion-text-wrap">
+                    <h2>{{task.name}}</h2>
+                    <p> {{task | taskDetailDisplay : minutesNow}} </p>
+                  </ion-label>
+                  <ion-badge [color]="task.done ? 'success' : 'danger'" slot="end">{{task | taskStatusDisplay}}</ion-badge>
+                  
+                </ion-item>
+              </ion-card-header>
+              <app-expandable
+                expandHeight="750px"
+                collapsedHeight="0px"
+                [expanded]="task.expanded"
+              >
+                <ion-card-content>
+                  <div *ngIf="task.detail.description && task.detail.description !== ''" style="white-space: pre-wrap;">
+                  Details: {{task.detail.description }}
+                  </div>
+                  <div *ngIf="task.remarks !== ''" style="white-space: pre-wrap;">
+                    Comment: {{task.remarks}}
+                    </div>
+                </ion-card-content>
+              </app-expandable>
+            </ion-card>
         </ion-list>
       </ion-col>
     </ion-row>

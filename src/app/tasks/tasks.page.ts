@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { TaskService } from '../services/task.service';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
-import { Task } from '../models/task';
+import { Task, TaskForDisplay } from '../models/task';
 import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
 import * as icons from '../constants/icons';
 import { presentAlertConfirm } from '../ion-components/alert';
@@ -17,13 +17,14 @@ import { NotificationService } from '../services/notification.service';
 import { Subscription, interval } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
+
 @Component({
   selector: 'app-tasks',
   templateUrl: 'tasks.page.html',
   styleUrls: ['tasks.page.scss'],
 })
 export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('taskList', {read: ElementRef}) taskList: ElementRef;
+  @ViewChild('taskList', { read: ElementRef }) taskList: ElementRef;
   toolbarText = '';
   segmentValue = 'active';
   showSpinner = false;
@@ -40,7 +41,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   notificationsOutlineIcon = icons.ionIcons.notificationsOutline;
   checklistIcon = icons.ionIcons.checkboxOutline;
   noteIcon = icons.ionIcons.documentTextOutline;
-  loadedTasks: Task[] = [];
+  loadedTasks: TaskForDisplay[] = [];
   settings: Setting[] = [];
   loadedDate: number;
   loadedDatetime: Date;
@@ -80,8 +81,11 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       });
     this.taskSub = this.taskService.tasks
       .subscribe({
-        next: (tasks: Task[]) => {
-          this.loadedTasks = tasks;
+        next: (tasks: TaskForDisplay[]) => {
+          this.loadedTasks = tasks.map((task, i) => {
+            task.expanded = false;
+            return task;
+          });
         }
       });
     this.loadedDateTimeSub = this.taskService.loadedDateTime.subscribe({
@@ -94,15 +98,15 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     const gesture = this.gestureController.create({
       gestureName: 'change-day',
       el: this.taskList.nativeElement,
       onEnd: ev => {
-        if(ev.deltaX > 50){
+        if (ev.deltaX > 50) {
           this.loadPreviousDay();
         }
-        if(ev.deltaX < -50) {
+        if (ev.deltaX < -50) {
           this.loadNextDay();
         }
       }
@@ -192,11 +196,11 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     this.segmentValue = event.detail.value;
   }
 
-  onTaskSelect(task: Task) {
+  onTaskSelect(task: TaskForDisplay) {
     this.presentActionSheet(task);
   }
 
-  async presentActionSheet(task: Task) {
+  async presentActionSheet(task: TaskForDisplay) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Task',
       buttons: [
@@ -228,6 +232,15 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
         }]
     });
     await actionSheet.present();
+  }
+
+  toggleExpandItem(index) {
+    if (!this.loadedTasks[index].expanded) {
+      for (const [i, note] of this.loadedTasks.entries()) {
+        note.expanded = false;
+      }
+    }
+    this.loadedTasks[index].expanded = !this.loadedTasks[index].expanded;
   }
 
   async onCreateNewTaskTypeSelect(event) {
@@ -286,8 +299,9 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     this.taskService.setLoadedDateTime(new Date(this.loadedDatetime.setDate(this.loadedDatetime.getDate() + 1)));
   }
 
-  async onToggleDone(task: Task) {
+  async onToggleDone(task: TaskForDisplay) {
     const taskToUpdate = { ...task };
+    delete taskToUpdate.expanded;
     const confirm = await presentAlertConfirm(this.alertController, '',
       'Are you sure?', 'Cancel', task.done ? 'Reopen' : 'Finish', '320px',
       [{ name: 'comment', type: 'text', placeholder: 'Add a comment..' }]);
@@ -309,6 +323,10 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     if (confirm.result) {
       await this.taskService.deleteTask(taskId);
     }
+  }
+
+  editTask(taskId) {
+    this.router.navigate(['/', 'tasks', 'task-create-edit', taskId]);
   }
 
   ngOnDestroy() {

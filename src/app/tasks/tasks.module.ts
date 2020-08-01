@@ -12,6 +12,7 @@ import { TaskStatusDisplayPipe } from '../shared/pipes/task-status-display.pipe'
 import { TaskDetailDisplayPipe } from '../shared/pipes/task-detail-display.pipe';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
+import { SharedModule } from '../shared/shared/shared.module';
 
 
 
@@ -20,7 +21,8 @@ import { CreateTaskTypeComponent } from './create-task-type/create-task-type.com
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    SharedModule
   ],
   declarations: [
     TasksPage,

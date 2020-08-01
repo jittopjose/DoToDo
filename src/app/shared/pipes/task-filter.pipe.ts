@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Task } from 'src/app/models/task';
+import { TaskForDisplay } from 'src/app/models/task';
 
 @Pipe({
   name: 'taskFilter'
 })
 export class TaskFilterPipe implements PipeTransform {
 
-  transform(tasks: Task[], filter: string): Task[] {
+  transform(tasks: TaskForDisplay[], filter: string): TaskForDisplay[] {
     if (!tasks || !filter) {
       return tasks;
     }
