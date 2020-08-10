@@ -1,0 +1,25 @@
+{
+    "TASK_LIST": {
+        "title": "Tasks",
+        "pending_header": "Pending",
+        "all_header": "All",
+        "done_header": "Done",
+        "no_tasks_msg": "No tasks to display",
+        "task_status_pending": "Pending",
+        "task_status_done": "Done",
+        "task_status_overdue": "Overdue",
+        "task_status_open": "Open",
+        "task_no_repeat": "No repeat",
+        "task_every_day": "Every day",
+        "task_every_weekdays": "Every weekdays",
+        "task_every_weekends": "Every weekends",
+        "task_once_a_week": "Once in a week",
+        "task_due_in_hour_text": "Due in {{hourValue}} hr.",
+        "task_due_in_minute_text": "Due in {{minuteValue}} min.",
+        "task_detail_display_caption": "Details",
+        "task_comment_display_caption": "Comment",
+        "today": "Oggi",
+        "tomorrow": "Domani",
+        "yesterday": "Ieri"
+    }
+}

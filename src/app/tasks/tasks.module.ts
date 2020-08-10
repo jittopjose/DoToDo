@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+
+import { TranslateModule } from '@ngx-translate/core';
+
 import { TasksPage } from './tasks.page';
 
 import { HomePageRoutingModule } from './tasks-routing.module';
@@ -22,7 +25,8 @@ import { SharedModule } from '../shared/shared/shared.module';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   declarations: [
     TasksPage,

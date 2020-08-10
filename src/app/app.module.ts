@@ -8,9 +8,17 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
+import { HttpClientModule, HttpClient} from '@angular/common/http';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { dbConfig } from './db/db-config';
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,7 +27,15 @@ import { dbConfig } from './db/db-config';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    NgxIndexedDBModule.forRoot(dbConfig)
+    NgxIndexedDBModule.forRoot(dbConfig),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     StatusBar,

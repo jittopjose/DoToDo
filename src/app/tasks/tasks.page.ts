@@ -6,7 +6,7 @@ import { TaskService } from '../services/task.service';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
 import { TaskAddQuickComponent } from './task-add-quick/task-add-quick.component';
 import { Task, TaskForDisplay } from '../models/task';
-import { convertYYYYMMDD, getDateTitle } from '../utilities/utility';
+import { convertYYYYMMDD } from '../utilities/utility';
 import * as icons from '../constants/icons';
 import { presentAlertConfirm } from '../ion-components/alert';
 import { presentPopover } from '../ion-components/popover';
@@ -16,6 +16,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { NotificationService } from '../services/notification.service';
 import { Subscription, interval } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -63,7 +64,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     private modalController: ModalController,
     private alertController: AlertController,
     private gestureController: GestureController,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -92,7 +94,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       next: (dateTime) => {
         this.loadedDatetime = dateTime;
         this.loadedDate = +convertYYYYMMDD(this.loadedDatetime);
-        this.toolbarText = getDateTitle(this.loadedDatetime, this.datePipe);
+        this.setDateTitle(this.loadedDatetime);
         this.loadTasks();
       }
     });
@@ -157,8 +159,10 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     if (pendingTaskCopyRunDateSetting === undefined || pendingTaskCopyRunDateSetting.value !== this.today) {
       const pendingTasks = await this.taskService.getPendingTasks();
       if (pendingTasks.length > 0) {
-        const confirm = await presentAlertConfirm(this.alertController, 'You have unfinished tasks. Do you want to copy them to this day?',
-          'Copy Tasks', 'Ignore', 'Copy', '320px', []);
+        const confirm = await presentAlertConfirm(this.alertController, this.translate.instant('TASK_LIST.unfinished_task_copy_confirm_msg'),
+          this.translate.instant('TASK_LIST.copy_tasks'),
+          this.translate.instant('TASK_LIST.ignore'),
+          this.translate.instant('TASK_LIST.copy'), '320px', []);
         if (confirm.result) {
           for (const task of pendingTasks) {
             task.dueDateTime = new Date(task.dueDateTime.setDate(task.dueDateTime.getDate() + 1));
@@ -303,23 +307,33 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     const taskToUpdate = { ...task };
     delete taskToUpdate.expanded;
     const confirm = await presentAlertConfirm(this.alertController, '',
-      'Are you sure?', 'Cancel', task.done ? 'Reopen' : 'Finish', '320px',
-      [{ name: 'comment', type: 'text', placeholder: 'Add a comment..' }]);
+      this.translate.instant('TASK_LIST.task_status_change_confirm_msg'),
+      this.translate.instant('TASK_LIST.cancel'),
+      task.done ? this.translate.instant('TASK_LIST.reopen') : this.translate.instant('TASK_LIST.finish'),
+      '320px',
+      [{ name: 'comment', type: 'text', placeholder: this.translate.instant('TASK_LIST.add_comment') }]);
     if (confirm.result) {
       taskToUpdate.done = !task.done;
       if (taskToUpdate.done) {
-        taskToUpdate.remarks = confirm.data.comment === '' ? 'Marked as done' : confirm.data.comment;
+        taskToUpdate.remarks = confirm.data.comment === ''
+        ? this.translate.instant('TASK_LIST.marked_done_default_comment')
+        : confirm.data.comment;
       }
       else {
-        taskToUpdate.remarks = confirm.data.comment === '' ? 'Marked as reopened' : confirm.data.comment;
+        taskToUpdate.remarks = confirm.data.comment === ''
+        ? this.translate.instant('TASK_LIST.marked_reopened_default_comment')
+        : confirm.data.comment;
       }
       this.taskService.updateTaskDone(taskToUpdate);
     }
   }
 
   async deleteTask(taskId) {
-    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the task?',
-      'Are you sure?', 'Cancel', 'Okay', null, []);
+    const confirm = await presentAlertConfirm(this.alertController, this.translate.instant('TASK_LIST.delete_task_confirm_msg'),
+    this.translate.instant('TASK_LIST.delete_task_confirm_header'),
+    this.translate.instant('TASK_LIST.cancel'),
+    this.translate.instant('TASK_LIST.okay'),
+    null, []);
     if (confirm.result) {
       await this.taskService.deleteTask(taskId);
     }
@@ -328,6 +342,43 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   editTask(taskId) {
     this.router.navigate(['/', 'tasks', 'task-create-edit', taskId]);
   }
+
+  setDateTitle(date: Date) {
+    const dateStr = convertYYYYMMDD(date);
+    const todayStr = convertYYYYMMDD(new Date());
+    const yesterdayStr = convertYYYYMMDD(new Date().setDate(new Date().getDate() - 1));
+    const tomorrow = convertYYYYMMDD(new Date().setDate(new Date().getDate() + 1));
+    switch (dateStr) {
+      case todayStr: {
+        this.translate.get('TASK_LIST.today').subscribe((result: string) => {
+          this.toolbarText = result
+            + ' ('
+            + this.datePipe.transform(new Date(), 'EEE, MMM dd yyyy')
+            + ')';
+        });
+        break;
+      }
+      case yesterdayStr: {
+        this.translate.get('TASK_LIST.yesterday').subscribe((result: string) => {
+          this.toolbarText = result
+            + ' ('
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() - 1), 'EEE, MMM dd yyyy')
+            + ')';
+        });
+        break;
+      }
+      case tomorrow: {
+        this.translate.get('TASK_LIST.tomorrow').subscribe((result: string) => {
+          this.toolbarText = result
+            + ' ('
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'EEE, MMM dd yyyy')
+            + ')';
+        });
+        break;
+      }
+      default: { this.toolbarText = this.datePipe.transform(new Date(date), 'EEE, MMM dd yyyy') }
+    }
+  };
 
   ngOnDestroy() {
     this.notificationSub.unsubscribe();

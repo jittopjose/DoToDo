@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
     <ion-title>
-      Tasks
+      {{'TASK_LIST.title' | translate}}
     </ion-title>
 
     <ion-buttons slot="end" class="ion-margin-end">
@@ -32,13 +32,13 @@
       <ion-col>
         <ion-segment value="all" (ionChange)="segmentChanged($event)">
           <ion-segment-button value="pending">
-            <ion-label>Pending ({{(loadedTasks | taskFilter: 'pending').length}})</ion-label>
+            <ion-label>{{'TASK_LIST.pending_header' | translate}} ({{(loadedTasks | taskFilter: 'pending').length}})</ion-label>
           </ion-segment-button>
           <ion-segment-button value="all">
-            <ion-label>All ({{(loadedTasks | taskFilter: 'all').length}})</ion-label>
+            <ion-label>{{'TASK_LIST.all_header' | translate}} ({{(loadedTasks | taskFilter: 'all').length}})</ion-label>
           </ion-segment-button>
           <ion-segment-button value="done">
-            <ion-label>Done ({{(loadedTasks | taskFilter: 'done').length}})</ion-label>
+            <ion-label>{{'TASK_LIST.done_header' | translate}} ({{(loadedTasks | taskFilter: 'done').length}})</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -48,7 +48,7 @@
         
         <ion-list class="ion-no-margin">
             <ion-item *ngIf="(loadedTasks | taskFilter: segmentValue).length === 0 ">
-              <ion-label class="ion-text-center" >No tasks to display</ion-label>
+              <ion-label class="ion-text-center" >{{'TASK_LIST.no_tasks_msg' | translate}}</ion-label>
             </ion-item>
 
             <ion-card *ngFor="let task of loadedTasks | taskFilter: segmentValue;  let i = index">
@@ -84,10 +84,10 @@
               >
                 <ion-card-content>
                   <div *ngIf="task.detail.description && task.detail.description !== ''" style="white-space: pre-wrap;">
-                  Details: {{task.detail.description }}
+                    {{'TASK_LIST.task_detail_display_caption' | translate}}: {{task.detail.description }}
                   </div>
                   <div *ngIf="task.remarks !== ''" style="white-space: pre-wrap;">
-                    Comment: {{task.remarks}}
+                    {{'TASK_LIST.task_comment_display_caption' | translate}}: {{task.remarks}}
                     </div>
                 </ion-card-content>
               </app-expandable>
