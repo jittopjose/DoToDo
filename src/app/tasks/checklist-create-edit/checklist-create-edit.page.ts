@@ -6,6 +6,7 @@ import { Task } from '../../models/task';
 import { NgForm } from '@angular/forms';
 import { convertYYYYMMDD } from '../../utilities/utility';
 import { TaskService } from '../../services/task.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-checklist-create-edit',
@@ -19,14 +20,17 @@ export class ChecklistCreateEditPage implements OnInit {
   addChecklistItemIcon = icons.ionIcons.addOutline;
   deleteChecklistItemIcon = icons.ionIcons.closeOutline;
   saveChecklistIcon = icons.ionIcons.checkmarkOutline;
-  titleText = 'Add New Checklist';
+  titleText = this.translate.instant('CHECKLIST_CREATE_EDIT.add_new_checklist_title');
+  updateChecklistBtnLabel = this.translate.instant('CHECKLIST_CREATE_EDIT.update_checklist_button_label');
+  addChecklistBtnLabel = this.translate.instant('CHECKLIST_CREATE_EDIT.add_checklist_button_label');
   checklist: Task;
   checklistItem: string;
   checklistItemArray = [];
   constructor(
     private route: ActivatedRoute,
     private navController: NavController,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -94,7 +98,7 @@ export class ChecklistCreateEditPage implements OnInit {
       return;
     }
     this.checklistItemArray = this.checklist.detail.checklistItems;
-    this.titleText = 'Edit Task';
+    this.titleText = this.translate.instant('CHECKLIST_CREATE_EDIT.edit_checklist_title');;
   }
 
 

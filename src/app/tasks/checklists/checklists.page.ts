@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import * as icons from '../../constants/icons';
 import { Task } from '../../models/task';
@@ -27,7 +28,8 @@ export class ChecklistsPage implements OnInit {
   lastUpdatedTime = new Date().getTime();
   constructor(
     private taskService: TaskService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -70,8 +72,11 @@ export class ChecklistsPage implements OnInit {
   }
 
   async onDeleteChecklist(checklistId) {
-    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the checklist?',
-      'Are you sure?', 'Cancel', 'Okay', null, []);
+    const confirm = await presentAlertConfirm(this.alertController,
+    this.translate.instant('CHECKLISTS.delete_checklist_confirm_msg'),
+    this.translate.instant('CHECKLISTS.delete_checklist_confirm_header'),
+    this.translate.instant('CHECKLISTS.cancel'),
+    this.translate.instant('CHECKLISTS.okay'), null, []);
     if (confirm.result) {
       await this.taskService.deleteChecklist(checklistId);
     }

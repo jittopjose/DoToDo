@@ -16,7 +16,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Task Name</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.task_name_label' | translate}}</ion-label>
             <ion-input type="text" [ngModel] = "task?.name" name="name" required maxlength="40"></ion-input>
           </ion-item>
         </ion-col>
@@ -24,7 +24,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Task Description</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.task_description_label' | translate}}</ion-label>
             <ion-input type="text" [ngModel] = "task?.detail?.description" name="description" maxlength="40"></ion-input>
           </ion-item>
         </ion-col>
@@ -32,7 +32,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Due Date</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.due_date_label' | translate}}</ion-label>
             <ion-datetime name="dueDate" [ngModel] = "dueDateTime" 
             displayFormat="DDD, MMM DD YYYY"></ion-datetime>
           </ion-item>
@@ -41,7 +41,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Due Time</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.due_time_label' | translate}}</ion-label>
             <ion-datetime name="dueTime" [ngModel] = "dueDateTime"
             displayFormat="h:mm A"
             minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"></ion-datetime>
@@ -51,13 +51,13 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Repeat</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.repeat_selection_label' | translate}}</ion-label>
             <ion-select [ngModel] = "task?.repeat ? task?.repeat : 'no-repeat'" name='repeat'>
-              <ion-select-option value="no-repeat">No Repeat</ion-select-option>
-              <ion-select-option value="every-day">Every Day</ion-select-option>
-              <ion-select-option value="every-weekdays">Every Weekdays</ion-select-option>
-              <ion-select-option value="every-weekends">Every Weedends</ion-select-option>
-              <ion-select-option value="1-week">Once in a week</ion-select-option>
+              <ion-select-option value="no-repeat">{{'TASK_CREATE_EDIT.no_repeat_selection' | translate}}</ion-select-option>
+              <ion-select-option value="every-day">{{'TASK_CREATE_EDIT.everyday_selection' | translate}}</ion-select-option>
+              <ion-select-option value="every-weekdays">{{'TASK_CREATE_EDIT.every_weekdays_selection' | translate}}</ion-select-option>
+              <ion-select-option value="every-weekends">{{'TASK_CREATE_EDIT.every_weekends_selection' | translate}}</ion-select-option>
+              <ion-select-option value="1-week">{{'TASK_CREATE_EDIT.once_in_a_week_selection' | translate}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -65,17 +65,17 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">List</ion-label>
+            <ion-label position="floating">{{'TASK_CREATE_EDIT.list_label' | translate}}</ion-label>
             <ion-select [ngModel] = "task?.list ? task?.list : 'Personal'" name='list'>
-              <ion-select-option value="Personal">Personal</ion-select-option>
-              <ion-select-option value="Work">Work</ion-select-option>
+              <ion-select-option value="Personal">{{'TASK_CREATE_EDIT.task_list_item_label_personal' | translate}}</ion-select-option>
+              <ion-select-option value="Work">{{'TASK_CREATE_EDIT.task_list_item_label_work' | translate}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
-          <ion-button [disabled] = "!taskAddEditForm.valid" type="submit" expand="block" color="success" >{{task?.id ? 'Update Task' : 'Add Task'}}</ion-button>
+          <ion-button [disabled] = "!taskAddEditForm.valid" type="submit" expand="block" color="success" >{{task?.id ? updateTaskBtnLabel : addTaskBtnLabel}}</ion-button>
         </ion-col>
       </ion-row>
       </ion-grid>

@@ -1,10 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Task } from 'src/app/models/task';
 
 @Pipe({
   name: 'checklistSummaryDisplay'
 })
 export class ChecklistSummaryDisplayPipe implements PipeTransform {
+  constructor(private translate: TranslateService) { }
 
   transform(checklist: Task, lastUpdatedTime: number): string {
     const checklistSummary = '';
@@ -16,7 +18,7 @@ export class ChecklistSummaryDisplayPipe implements PipeTransform {
           doneItems++;
         }
       }
-      return `${doneItems} out of ${totalItems} checklist item(s) are done.`;
+      return this.translate.instant('CHECKLISTS.checklist_summary_text', {doneCount: doneItems, totalCount: totalItems});
     }
     return checklistSummary;
   }

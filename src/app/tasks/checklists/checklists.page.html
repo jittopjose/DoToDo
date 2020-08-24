@@ -4,7 +4,7 @@
       <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Checklists
+      {{'CHECKLISTS.title' | translate}}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button [routerLink]="['/tasks/checklist-create-edit/new']"  >
@@ -16,7 +16,7 @@
 
 <ion-content>
   <ion-item *ngIf="loadedChecklists.length === 0" lines="full" class="ion-text-center">
-    <ion-label  >No checklists to display</ion-label>
+    <ion-label  >{{'CHECKLISTS.no_checklists_msg' | translate}}</ion-label>
   </ion-item>
   
   <ion-card  *ngFor="let checklist of loadedChecklists; let i = index;">

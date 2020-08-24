@@ -7,7 +7,7 @@
       ></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Notes
+      {{'NOTES.title' | translate}}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="createNewNote()">
@@ -19,7 +19,7 @@
 
 <ion-content>
   <ion-item *ngIf="loadedNotes.length === 0" lines="full" class="ion-text-center">
-    <ion-label>No notes to display</ion-label>
+    <ion-label>{{'NOTES.no_notes_msg' | translate}}</ion-label>
   </ion-item>
   <ion-card *ngFor="let note of loadedNotes; let i = index;">
     <ion-card-header class="ion-no-padding">
@@ -43,11 +43,11 @@
         <ion-label class="ion-text-wrap">
           <div *ngIf="!note.noteEditMode">
             <h2 *ngIf="!note.noteEditMode">{{note.name}}</h2>
-            <p>Last updated: {{note.detail.lastUpdated | date: 'medium'}}</p>
+            <p>{{'NOTES.last_updated_label' | translate}}: {{note.detail.lastUpdated | date: 'medium'}}</p>
           </div>
           
           <ion-item *ngIf="note.noteEditMode" >
-            <ion-label position="floating">Note name</ion-label>
+            <ion-label position="floating">{{'NOTES.note_name_label' | translate}}</ion-label>
             <ion-input [(ngModel)]="note.name"></ion-input>
           </ion-item>
           
@@ -68,7 +68,7 @@
             autofocus="true"
             [(ngModel)]="note.detail.noteText"
             autoGrow="true"
-            placeholder="Add your note here..."
+            [placeholder]= "notesPlaceholderText"
           ></ion-textarea>
         </ion-item>
       </ion-card-content>

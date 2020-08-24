@@ -8,6 +8,7 @@ import { TaskService } from '../../services/task.service';
 import { Subscription } from 'rxjs';
 import { convertYYYYMMDD } from '../../utilities/utility';
 import { presentAlertConfirm } from '../../ion-components/alert';
+import { TranslateService } from '@ngx-translate/core';
 
 
 interface NoteForDisplay extends Task {
@@ -29,11 +30,13 @@ export class NotesPage implements OnInit {
   loadedNotes: NoteForDisplay[] = [];
   notesSub: Subscription;
   newTaskCreatedDatetime = new Date();
+  notesPlaceholderText = this.translate.instant('NOTES.note_placeholder_text');
 
   constructor(
     private taskService: TaskService,
     private datePipe: DatePipe,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -123,8 +126,11 @@ export class NotesPage implements OnInit {
   }
 
   async onDeleteNote(noteId) {
-    const confirm = await presentAlertConfirm(this.alertController, 'Are you sure you want to delete the note?',
-      'Are you sure?', 'Cancel', 'Okay', null, []);
+    const confirm = await presentAlertConfirm(this.alertController,
+      this.translate.instant('NOTES.delete_note_confirm_msg'),
+      this.translate.instant('NOTES.delete_note_confirm_header'),
+      this.translate.instant('NOTES.cancel'),
+      this.translate.instant('NOTES.okay'), null, []);
     if (confirm.result) {
       await this.taskService.deleteNote(noteId);
     }

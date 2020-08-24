@@ -7,6 +7,7 @@ import { TaskService } from 'src/app/services/task.service';
 import { Task } from 'src/app/models/task';
 import { NgForm } from '@angular/forms';
 import { convertYYYYMMDD } from 'src/app/utilities/utility';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-task-edit',
@@ -17,14 +18,17 @@ export class TaskCreateEditPage implements OnInit {
   @ViewChild('taskAddEditForm', { static: true }) taskAddEditForm: NgForm;
   backButtonIcon = icons.ionIcons.arrowBackOutline;
 
-  titleText = 'Add New Task';
+  titleText = this.translate.instant('TASK_CREATE_EDIT.add_new_task_title');
   task: Task;
+  addTaskBtnLabel = this.translate.instant('TASK_CREATE_EDIT.add_task_button_label');
+  updateTaskBtnLabel = this.translate.instant('TASK_CREATE_EDIT.update_task_button_label');
   dueDateTime = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
 
   constructor(
     private route: ActivatedRoute,
     private navController: NavController,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -92,7 +96,7 @@ export class TaskCreateEditPage implements OnInit {
       return;
     }
     this.dueDateTime = this.task.dueDateTime.toISOString();
-    this.titleText = 'Edit Task';
+    this.titleText = this.translate.instant('TASK_CREATE_EDIT.add_new_task_title');
   }
 
 }

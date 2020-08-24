@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TaskCreateEditPageRoutingModule } from './task-create-edit-routing.module';
 
@@ -13,7 +14,8 @@ import { TaskCreateEditPage } from './task-create-edit.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    TaskCreateEditPageRoutingModule
+    TaskCreateEditPageRoutingModule,
+    TranslateModule
   ],
   declarations: [TaskCreateEditPage]
 })

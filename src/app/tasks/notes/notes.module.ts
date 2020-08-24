@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { NotesPageRoutingModule } from './notes-routing.module';
 
@@ -15,7 +16,8 @@ import { SharedModule } from '../../shared/shared/shared.module';
     FormsModule,
     IonicModule,
     NotesPageRoutingModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   declarations: [
     NotesPage

@@ -34,7 +34,65 @@
         "marked_reopened_default_comment": "Marked as reopened",
         "delete_task_confirm_msg": "Are you sure you want to delete the task?",
         "delete_task_confirm_header": "Are you sure?",
-        "okay": "Okay"
-
+        "okay": "Okay",
+        "add_quick_task_label": "Quick Task",
+        "add_advanced_task_label": "Advanced Task",
+        "add_checklist_label": "Checklist"
+    },
+    "TASK_ADD_QUICK": {
+        "add_new_task_title": "Add New Task",
+        "task_name_label": "Task Name",
+        "due_date_label": "Due Date",
+        "add_task_button_label": "Add Task"
+    },
+    "TASK_CREATE_EDIT": {
+        "add_new_task_title": "Add New Task",
+        "edit_task_title": "Edit Task",
+        "task_name_label": "Task Name",
+        "task_description_label": "Task Description",
+        "due_date_label": "Due Date",
+        "due_time_label": "Due Time",
+        "repeat_selection_label": "Repeat",
+        "no_repeat_selection": "No Repeat",
+        "everyday_selection":"Every Day",
+        "every_weekdays_selection": "Every Weekdays",
+        "every_weekends_selection": "Every Weedends",
+        "once_in_a_week_selection": "Once in a week",
+        "list_label": "List",
+        "add_task_button_label": "Add Task",
+        "update_task_button_label": "Update Task",
+        "task_list_item_label_personal": "Personal",
+        "task_list_item_label_work": "Work"
+    },
+    "CHECKLISTS": {
+        "title": "Checklists",
+        "no_checklists_msg": "No checklists to display",
+        "checklist_summary_text": "{{doneCount}} / {{totalCount}} done",
+        "checklist_status_done": "Done",
+        "checklist_status_inprogress": "In Progress",
+        "checklist_status_pending": "Pending",
+        "delete_checklist_confirm_msg": "Are you sure you want to delete the checklist?",
+        "delete_checklist_confirm_header": "Are you sure?",
+        "okay": "Okay",
+        "cancel":"Cancel"
+    },
+    "CHECKLIST_CREATE_EDIT": {
+        "checklist_name_label": "Checklist Name",
+        "checklist_item_label": "Checklist Item",
+        "add_new_checklist_title": "Add New Checklist",
+        "edit_checklist_title": "Edit Checklist",
+        "add_checklist_button_label": "Add Checklist",
+        "update_checklist_button_label": "Update Checklist"
+    },
+    "NOTES": {
+        "title": "Notes",
+        "no_notes_msg": "No notes to display",
+        "last_updated_label": "Last updated",
+        "note_name_label": "Note name",
+        "note_placeholder_text": "Add your note here...",
+        "delete_note_confirm_msg":"Are you sure you want to delete the note?",
+        "delete_note_confirm_header": "Are you sure?",
+        "okay": "Okay",
+        "cancel":"Cancel"
     }
 }

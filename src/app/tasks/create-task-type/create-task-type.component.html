@@ -5,15 +5,15 @@
         <ion-list>
           <ion-item lines="full" (click) = "onSelectTaskType('quick')">
             <ion-icon slot="start"  [src]="quickTaskIcon"></ion-icon>
-            <ion-label>Quick Task</ion-label>
+            <ion-label>{{'TASK_LIST.add_quick_task_label' | translate}}</ion-label>
           </ion-item>
           <ion-item lines="full" (click) = "onSelectTaskType('advanced')" >
             <ion-icon slot="start"  [src]="advancedTaskIcon"></ion-icon>
-            <ion-label>Advanced Task</ion-label>
+            <ion-label>{{'TASK_LIST.add_advanced_task_label' | translate}}</ion-label>
           </ion-item>
           <ion-item lines="none" (click) = "onSelectTaskType('checklist')" >
             <ion-icon slot="start"  [src]="checklistIcon"></ion-icon>
-            <ion-label>Checklist</ion-label>
+            <ion-label>{{'TASK_LIST.add_checklist_label' | translate}}</ion-label>
           </ion-item>
         </ion-list>
       </ion-col>

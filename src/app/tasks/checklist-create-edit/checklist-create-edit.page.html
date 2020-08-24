@@ -21,7 +21,7 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             
-            <ion-label position="floating">Checklist Name</ion-label>
+            <ion-label position="floating">{{'CHECKLIST_CREATE_EDIT.checklist_name_label' | translate}}</ion-label>
             <ion-input type="text" [ngModel] = "checklist?.name" name="name" required maxlength="40"></ion-input>
           
           </ion-item>
@@ -36,7 +36,7 @@
                 <ion-row>
                   <ion-col size="9">
                     <ion-item>
-                    <ion-label position="floating">Checklist Item</ion-label>
+                    <ion-label position="floating">{{'CHECKLIST_CREATE_EDIT.checklist_item_label' | translate}}</ion-label>
                     <ion-input #checklistItemRef name="checklistItem" type="text" [(ngModel)] = "checklistItem"></ion-input>
                   </ion-item>
                   </ion-col>
@@ -75,7 +75,7 @@
       </ion-row>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
-          <ion-button type="submit" [disabled] = "!checklistAddEditForm.valid || checklistItemArray.length === 0"  expand="block" color="success" >{{checklist?.id ? 'Update Checklist' : 'Add Checklist'}}</ion-button>
+          <ion-button type="submit" [disabled] = "!checklistAddEditForm.valid || checklistItemArray.length === 0"  expand="block" color="success" >{{checklist?.id ? updateChecklistBtnLabel : addChecklistBtnLabel}}</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
