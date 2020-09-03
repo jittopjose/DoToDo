@@ -68,6 +68,8 @@ export class TaskService {
               task.dueDateTime.getSeconds(), 999));
           newTask.dueDate = +convertYYYYMMDD(newTask.dueDateTime);
           newTask.done = false;
+          newTask.remarks = '';
+          console.log(newTask);
           delete newTask.id;
 
           await this.dbService.add('tasks', newTask);
