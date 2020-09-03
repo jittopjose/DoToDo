@@ -4,14 +4,14 @@
       <ion-back-button [icon] = "backButtonIcon" defaultHref="/tasks"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Settings
+      {{'SETTINGS.title' | translate}}
     </ion-title>
     
   </ion-toolbar>
 </ion-header>
 <ion-list>
   <ion-item>
-    <ion-label>Auto import pending tasks</ion-label>
+    <ion-label>{{'SETTINGS.auto_import_pending_tasks_settings_label' | translate}}</ion-label>
     <ion-toggle slot="end" [(checked)] = "autoImportPendingTasks" 
     (ionChange) = "onSettingChange('autoImportPendingTasks', $event)" color="light"></ion-toggle>
   </ion-item>

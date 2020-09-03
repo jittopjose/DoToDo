@@ -5,6 +5,7 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { convertYYYYMMDD } from '../utilities/utility';
 import { Task } from '../models/task';
 import { TaskService } from './task.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class NotificationService {
 
   constructor(
     private dbService: NgxIndexedDBService,
-    private taskService: TaskService) { }
+    private taskService: TaskService,
+    private translate: TranslateService) { }
 
   get notifications() {
     return this._notifications.asObservable();
@@ -34,7 +36,7 @@ export class NotificationService {
     if (overdueCount > 0) {
       const notification: Notification = {
         id: -1,
-        text: `You had ${overdueCount} unfinished task(s) yesterday`,
+        text: this.translate.instant('NOTIFICATIONS.yesterday_unfinished_task_count_msg', {overdueTasksCount: overdueCount}),
         active: 'true'
       }
       delete notification.id;
@@ -76,14 +78,14 @@ export class NotificationService {
     const minutesTaskDue = task.dueDateTime.getTime() / 1000 / 60;
     if (minutesTaskDue > minutesNow) {
       if((minutesTaskDue - minutesNow) < 15) {
-        return `Task: "${task.name}" is due in less than 15 min.`;
+        return this.translate.instant('NOTIFICATIONS.task_due_in_15min_msg', {taskName: task.name});
       }else if((minutesTaskDue - minutesNow) < 30) {
-        return `Task: "${task.name}" is due in less than half an hour.`;
+        return this.translate.instant('NOTIFICATIONS.task_due_in_30min_msg', {taskName: task.name});
       } else if ((minutesTaskDue - minutesNow) < 60) {
-        return `Task: "${task.name}" is due in less than an hour.`;
+        return this.translate.instant('NOTIFICATIONS.task_due_in_1hr_msg', {taskName: task.name});
       }
     } else {
-      return `Task: "${task.name}" is overdue`;
+      return this.translate.instant('NOTIFICATIONS.task_overdue_msg', {taskName: task.name});
     }
   }
 

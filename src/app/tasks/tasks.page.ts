@@ -159,7 +159,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     if (pendingTaskCopyRunDateSetting === undefined || pendingTaskCopyRunDateSetting.value !== this.today) {
       const pendingTasks = await this.taskService.getPendingTasks();
       if (pendingTasks.length > 0) {
-        const confirm = await presentAlertConfirm(this.alertController, this.translate.instant('TASK_LIST.unfinished_task_copy_confirm_msg'),
+        const confirm = await presentAlertConfirm(this.alertController,
+          this.translate.instant('TASK_LIST.unfinished_task_copy_confirm_msg'),
           this.translate.instant('TASK_LIST.copy_tasks'),
           this.translate.instant('TASK_LIST.ignore'),
           this.translate.instant('TASK_LIST.copy'), '320px', []);
@@ -280,7 +281,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   async createQuickTask(name: string, dueDate: string) {
     const task: Task = {
       id: -1,
-      name: name,
+      name,
       remarks: '',
       done: false,
       dueDateTime: new Date(dueDate),
