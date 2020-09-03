@@ -3,6 +3,15 @@
 
 Changelog: 
 
+#0.6.0
+
+*Redesigned task list page similar to checklist and notes
+
+*Added description field for tasks
+
+*Added display of comments if entered when changing task status to done/reopen
+
+
 #0.5.0
 
 *Updated bottom bar date format to include day of week
