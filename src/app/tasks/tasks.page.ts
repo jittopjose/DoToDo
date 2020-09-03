@@ -308,8 +308,9 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   async onToggleDone(task: TaskForDisplay) {
     const taskToUpdate = { ...task };
     delete taskToUpdate.expanded;
-    const confirm = await presentAlertConfirm(this.alertController, '',
-      this.translate.instant('TASK_LIST.task_status_change_confirm_msg'),
+    const confirm = await presentAlertConfirm(this.alertController,
+      task.done ? this.translate.instant('TASK_LIST.task_reopen_confirm_msg') : this.translate.instant('TASK_LIST.task_done_confirm_msg'),
+      this.translate.instant('TASK_LIST.task_status_change_confirm_header'),
       this.translate.instant('TASK_LIST.cancel'),
       task.done ? this.translate.instant('TASK_LIST.reopen') : this.translate.instant('TASK_LIST.finish'),
       '320px',
