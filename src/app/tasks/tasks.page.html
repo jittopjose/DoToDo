@@ -68,7 +68,7 @@
                     </ion-button>
                   </ion-buttons>
                 </ion-item>
-                <ion-item lines="none" (click)="toggleExpandItem(i)">
+                <ion-item lines="none" (click)="toggleExpandItem(task)">
                   <ion-label class="ion-text-wrap">
                     <h2>{{task.name}}</h2>
                     <p> {{task | taskDetailDisplay : minutesNow}} </p>

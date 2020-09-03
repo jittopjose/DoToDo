@@ -239,7 +239,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     await actionSheet.present();
   }
 
-  toggleExpandItem(index) {
+  toggleExpandItem(task: TaskForDisplay) {
+    const index = this.loadedTasks.map( item => item.id).indexOf(task.id);
     if (!this.loadedTasks[index].expanded) {
       for (const [i, note] of this.loadedTasks.entries()) {
         note.expanded = false;
