@@ -16,6 +16,7 @@ import { TaskDetailDisplayPipe } from '../shared/pipes/task-detail-display.pipe'
 import { NotificationsComponent } from './notifications/notifications.component';
 import { CreateTaskTypeComponent } from './create-task-type/create-task-type.component';
 import { SharedModule } from '../shared/shared/shared.module';
+import { DateProxyPipe } from '../shared/pipes/date-proxy.pipe';
 
 
 
@@ -39,7 +40,7 @@ import { SharedModule } from '../shared/shared/shared.module';
     TaskDetailDisplayPipe
   ],
   providers: [
-    DatePipe
+    DateProxyPipe
   ]
 })
 export class HomePageModule {}

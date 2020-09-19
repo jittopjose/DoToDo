@@ -17,6 +17,7 @@ import { NotificationService } from '../services/notification.service';
 import { Subscription, interval } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { DateProxyPipe } from '../shared/pipes/date-proxy.pipe';
 
 
 @Component({
@@ -64,7 +65,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     private modalController: ModalController,
     private alertController: AlertController,
     private gestureController: GestureController,
-    private datePipe: DatePipe,
+    private datePipe: DateProxyPipe,
     private translate: TranslateService
   ) { }
 

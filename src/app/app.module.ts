@@ -1,4 +1,4 @@
-import { APP_BASE_HREF, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { APP_BASE_HREF, LocationStrategy, HashLocationStrategy, registerLocaleData } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -15,13 +15,17 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { dbConfig } from './db/db-config';
+import { DateProxyPipe } from './shared/pipes/date-proxy.pipe';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr)
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, DateProxyPipe],
   entryComponents: [],
   imports: [
     BrowserModule,
