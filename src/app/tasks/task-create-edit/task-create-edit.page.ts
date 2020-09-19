@@ -39,7 +39,7 @@ export class TaskCreateEditPage implements OnInit {
           return;
         }
         if (param.get('taskId') === 'new') {
-
+          this.dueDateTime = new Date(this.taskService.loadedDateTimeCurrentValue.setHours(23, 59, 59, 999)).toISOString();
         } else {
           this.getTask(param.get('taskId'));
         }

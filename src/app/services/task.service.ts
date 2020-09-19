@@ -32,6 +32,10 @@ export class TaskService {
     return this._loadedDateTime.asObservable();
   }
 
+  get loadedDateTimeCurrentValue() {
+    return this._loadedDateTime.value;
+  }
+
   setLoadedDateTime(date: Date) {
     this._loadedDateTime.next(date);
   }
