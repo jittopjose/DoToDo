@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
@@ -9,6 +9,7 @@ import { NotesPageRoutingModule } from './notes-routing.module';
 
 import { NotesPage } from './notes.page';
 import { SharedModule } from '../../shared/shared/shared.module';
+import { DateProxyPipe } from 'src/app/shared/pipes/date-proxy.pipe';
 
 @NgModule({
   imports: [
@@ -21,6 +22,9 @@ import { SharedModule } from '../../shared/shared/shared.module';
   ],
   declarations: [
     NotesPage
+  ],
+  providers: [
+    DatePipe
   ]
 })
 export class NotesPageModule {}
