@@ -99,7 +99,8 @@
     },
     "SETTINGS": {
         "title": "Settings",
-        "auto_import_pending_tasks_settings_label": "Auto import pending tasks"
+        "auto_import_pending_tasks_settings_label": "Auto import pending tasks",
+        "enable_dark_mode_label": "Enable Dark Mode"
     },
     "NOTIFICATIONS": {
         "no_notifications_msg": "No notifications",

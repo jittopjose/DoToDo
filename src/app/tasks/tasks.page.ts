@@ -80,6 +80,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: (settings: Setting[]) => {
           this.settings = settings;
+          this.applySettings(settings);
         }
       });
     this.taskSub = this.taskService.tasks
@@ -117,7 +118,24 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
     gesture.enable();
   }
 
+  async applyTheme(enableDarkMode) {
+    if (enableDarkMode !== undefined) {
+      if (enableDarkMode.value === 'true') {
+        document.body.setAttribute('data-theme', 'dark');
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+      }
+    }
+  }
+
+  async applySettings(settings: Setting[]) {
+    const enableDarkMode = settings.find(s => s.name === 'enableDarkMode');
+    this.applyTheme(enableDarkMode);
+  }
+
   async initApp() {
+    const enableDarkMode = await this.settingService.getSetting('enableDarkMode');
+    await this.applyTheme(enableDarkMode);
     this.showSpinner = true;
     await this.settingService.initSettings();
     await this.settingService.loadSettings();
@@ -157,21 +175,32 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     let pendingTaskCopyRunDateSetting = await this.settingService.getSetting('pendingTaskCopyRunDate');
+    const autoImportPendingTasksSetting = await this.settingService.getSetting('autoImportPendingTasks');
     if (pendingTaskCopyRunDateSetting === undefined || pendingTaskCopyRunDateSetting.value !== this.today) {
       const pendingTasks = await this.taskService.getPendingTasks();
       if (pendingTasks.length > 0) {
-        const confirm = await presentAlertConfirm(this.alertController,
-          this.translate.instant('TASK_LIST.unfinished_task_copy_confirm_msg'),
-          this.translate.instant('TASK_LIST.copy_tasks'),
-          this.translate.instant('TASK_LIST.ignore'),
-          this.translate.instant('TASK_LIST.copy'), '320px', []);
-        if (confirm.result) {
+        if (autoImportPendingTasksSetting.value === 'true') {
           for (const task of pendingTasks) {
             task.dueDateTime = new Date(task.dueDateTime.setDate(task.dueDateTime.getDate() + 1));
             task.dueDate = +convertYYYYMMDD(task.dueDateTime);
             task.refTaskId = -1;
             task.done = false;
             await this.taskService.addNewTask(task, this.loadedDate);
+          }
+        } else {
+          const confirm = await presentAlertConfirm(this.alertController,
+            this.translate.instant('TASK_LIST.unfinished_task_copy_confirm_msg'),
+            this.translate.instant('TASK_LIST.copy_tasks'),
+            this.translate.instant('TASK_LIST.ignore'),
+            this.translate.instant('TASK_LIST.copy'), '320px', []);
+          if (confirm.result) {
+            for (const task of pendingTasks) {
+              task.dueDateTime = new Date(task.dueDateTime.setDate(task.dueDateTime.getDate() + 1));
+              task.dueDate = +convertYYYYMMDD(task.dueDateTime);
+              task.refTaskId = -1;
+              task.done = false;
+              await this.taskService.addNewTask(task, this.loadedDate);
+            }
           }
         }
       }
@@ -241,7 +270,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleExpandItem(task: TaskForDisplay) {
-    const index = this.loadedTasks.map( item => item.id).indexOf(task.id);
+    const index = this.loadedTasks.map(item => item.id).indexOf(task.id);
     if (!this.loadedTasks[index].expanded) {
       for (const [i, note] of this.loadedTasks.entries()) {
         note.expanded = false;
@@ -320,13 +349,13 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
       taskToUpdate.done = !task.done;
       if (taskToUpdate.done) {
         taskToUpdate.remarks = confirm.data.comment === ''
-        ? this.translate.instant('TASK_LIST.marked_done_default_comment')
-        : confirm.data.comment;
+          ? this.translate.instant('TASK_LIST.marked_done_default_comment')
+          : confirm.data.comment;
       }
       else {
         taskToUpdate.remarks = confirm.data.comment === ''
-        ? this.translate.instant('TASK_LIST.marked_reopened_default_comment')
-        : confirm.data.comment;
+          ? this.translate.instant('TASK_LIST.marked_reopened_default_comment')
+          : confirm.data.comment;
       }
       this.taskService.updateTaskDone(taskToUpdate);
     }
@@ -334,10 +363,10 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
 
   async deleteTask(taskId) {
     const confirm = await presentAlertConfirm(this.alertController, this.translate.instant('TASK_LIST.delete_task_confirm_msg'),
-    this.translate.instant('TASK_LIST.delete_task_confirm_header'),
-    this.translate.instant('TASK_LIST.cancel'),
-    this.translate.instant('TASK_LIST.okay'),
-    null, []);
+      this.translate.instant('TASK_LIST.delete_task_confirm_header'),
+      this.translate.instant('TASK_LIST.cancel'),
+      this.translate.instant('TASK_LIST.okay'),
+      null, []);
     if (confirm.result) {
       await this.taskService.deleteTask(taskId);
     }
@@ -357,7 +386,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
         this.translate.get('TASK_LIST.today').subscribe((result: string) => {
           this.toolbarText = result
             + ' ('
-            + this.datePipe.transform(new Date(), 'EEE, MMM dd yyyy')
+            + this.datePipe.transform(new Date(), 'EEE ')
+            + this.datePipe.transform(new Date(), 'mediumDate')
             + ')';
         });
         break;
@@ -366,7 +396,8 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
         this.translate.get('TASK_LIST.yesterday').subscribe((result: string) => {
           this.toolbarText = result
             + ' ('
-            + this.datePipe.transform(new Date().setDate(new Date().getDate() - 1), 'EEE, MMM dd yyyy')
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() - 1), 'EEE ')
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() - 1), 'mediumDate')
             + ')';
         });
         break;
@@ -375,12 +406,16 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
         this.translate.get('TASK_LIST.tomorrow').subscribe((result: string) => {
           this.toolbarText = result
             + ' ('
-            + this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'EEE, MMM dd yyyy')
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'EEE ')
+            + this.datePipe.transform(new Date().setDate(new Date().getDate() + 1), 'mediumDate')
             + ')';
         });
         break;
       }
-      default: { this.toolbarText = this.datePipe.transform(new Date(date), 'EEE, MMM dd yyyy') }
+      default: { 
+        this.toolbarText = this.datePipe.transform(new Date(date), 'EEE ')
+                          + this.datePipe.transform(new Date(date), 'mediumDate')
+      }
     }
   };
 

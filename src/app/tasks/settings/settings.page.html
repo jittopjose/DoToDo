@@ -13,7 +13,12 @@
   <ion-item>
     <ion-label>{{'SETTINGS.auto_import_pending_tasks_settings_label' | translate}}</ion-label>
     <ion-toggle slot="end" [(checked)] = "autoImportPendingTasks" 
-    (ionChange) = "onSettingChange('autoImportPendingTasks', $event)" color="light"></ion-toggle>
+    (ionChange) = "onSettingChange('autoImportPendingTasks', $event)" color="primary"></ion-toggle>
+  </ion-item>
+  <ion-item>
+    <ion-label>{{'SETTINGS.enable_dark_mode_label' | translate}}</ion-label>
+    <ion-toggle slot="end" [(checked)] = "enableDarkMode" 
+    (ionChange) = "onSettingChange('enableDarkMode', $event)" color="primary"></ion-toggle>
   </ion-item>
 </ion-list>
 

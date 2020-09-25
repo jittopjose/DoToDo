@@ -11,6 +11,7 @@ export class SettingsPage implements OnInit {
 
   backButtonIcon = icons.ionIcons.arrowBackOutline;
   autoImportPendingTasks = false;
+  enableDarkMode = false;
   constructor(private settingService: SettingService) { }
 
   ngOnInit() {
@@ -22,6 +23,7 @@ export class SettingsPage implements OnInit {
 
   async initSettings() {
     this.autoImportPendingTasks = await (await this.settingService.getSetting('autoImportPendingTasks')).value === 'true';
+    this.enableDarkMode = await (await this.settingService.getSetting('enableDarkMode')).value === 'true';
   }
 
   async onSettingChange(settingName, event) {

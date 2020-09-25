@@ -21,6 +21,7 @@ export class SettingService {
     let pendingTaskCopyRunDateSetting = await this.getSetting('pendingTaskCopyRunDate');
     let autoImportPendingTasksSetting = await this.getSetting('autoImportPendingTasks');
     let initNotificationsSummaryRunDateSetting = await this.getSetting('initNotificationsSummaryRunDate');
+    let enableDarkModeSetting = await this.getSetting('enableDarkMode');
     if(taskSchedulerRunDateSetting === undefined) {
       taskSchedulerRunDateSetting = {
         id: -1,
@@ -44,6 +45,14 @@ export class SettingService {
         value: 'false'
       }
       await this.addSetting(autoImportPendingTasksSetting);
+    }
+    if(enableDarkModeSetting === undefined) {
+      enableDarkModeSetting = {
+        id: -1,
+        name: 'enableDarkMode',
+        value: 'false'
+      }
+      await this.addSetting(enableDarkModeSetting);
     }
     if(initNotificationsSummaryRunDateSetting === undefined) {
       initNotificationsSummaryRunDateSetting = {
