@@ -6,6 +6,7 @@ export const presentPopover = async (popoverController: PopoverController, event
       componentProps,
       event,
       translucent: true,
+      animated:false
     });
     if(width !== null) {
         popover.style.setProperty('--min-width', width);

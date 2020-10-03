@@ -21,7 +21,8 @@ export const presentAlertConfirm = async (
           text: confirmText,
           handler: (data) => resolveFunction({result: true, data})
         }
-      ]
+      ],
+      animated:false
     });
     if(width !== null) {
       alert.style.setProperty('--min-width', width);
@@ -48,7 +49,8 @@ export const presentAlertConfirm = async (
           text: 'Yes',
           handler: () => resolveFunction(true)
         }
-      ]
+      ],
+      animated: false
     });
 
     await alert.present();
