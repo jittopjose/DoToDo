@@ -100,7 +100,7 @@
     "SETTINGS": {
         "title": "Paramètres",
         "auto_import_pending_tasks_settings_label": "Importer automatiquement les tâches en attente",
-        "enable_dark_mode_label": "Enable Dark Mode"
+        "enable_dark_mode_label": "Activer le mode sombre"
     },
     "NOTIFICATIONS": {
         "no_notifications_msg": "Aucune notification",
