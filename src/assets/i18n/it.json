@@ -109,5 +109,10 @@
         "task_due_in_30min_msg": "Task: {{taskName}} is due in less than half an hour.",
         "task_due_in_1hr_msg": "Task: {{taskName}} is due in less than an hour.",
         "task_overdue_msg": "Task: {{taskName}} is overdue"
+    },
+    "COMMON": {
+        "month_short_names": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+        "day_short_names": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+        "date_display_format": "DDD MMM DD, YYYY"
     }
 }

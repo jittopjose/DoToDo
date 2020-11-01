@@ -43,6 +43,7 @@ export class TasksPage implements OnInit, OnDestroy, AfterViewInit {
   notificationsOutlineIcon = icons.ionIcons.notificationsOutline;
   checklistIcon = icons.ionIcons.checkboxOutline;
   noteIcon = icons.ionIcons.documentTextOutline;
+  menuIcon = icons.ionIcons.menuSharp;
   loadedTasks: TaskForDisplay[] = [];
   settings: Setting[] = [];
   loadedDate: number;

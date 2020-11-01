@@ -25,7 +25,9 @@
           <ion-item>
             <ion-label position="floating">{{'TASK_ADD_QUICK.due_date_label' | translate}}</ion-label>
             <ion-datetime name="dueDate" [(ngModel)] = "today" required ngModel
-              displayFormat="DDD, MMM DD YYYY" ></ion-datetime>
+              [displayFormat]= "dateDisplayFormat"
+              [dayShortNames] = "dayShortNames"
+              [monthShortNames] = "monthShortNames" ></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>

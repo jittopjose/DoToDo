@@ -17,15 +17,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { dbConfig } from './db/db-config';
 import { DateProxyPipe } from './shared/pipes/date-proxy.pipe';
 import localeFr from '@angular/common/locales/fr';
+import localeNl from '@angular/common/locales/nl';
 
-registerLocaleData(localeFr)
+registerLocaleData(localeFr);
+registerLocaleData(localeNl);
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, DateProxyPipe],
+  declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

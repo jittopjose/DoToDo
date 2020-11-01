@@ -9,11 +9,11 @@ export class LanguageService {
   constructor(private translate: TranslateService) { }
 
   setInitialAppLanguage(){
-    this.translate.addLangs(['en', 'fr']);
+    this.translate.addLangs(['en', 'fr', 'nl']);
     this.translate.setDefaultLang('en');
     const browserLang = this.translate.getBrowserLang();
     console.log(browserLang);
-    this.setLanguage(browserLang.match(/en|fr/) ? browserLang : 'en');
+    this.setLanguage(browserLang.match(/en|fr|nl/) ? browserLang : 'en');
   }
 
   setLanguage(language) {

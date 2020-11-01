@@ -24,8 +24,7 @@ import { DateProxyPipe } from 'src/app/shared/pipes/date-proxy.pipe';
     NotesPage
   ],
   providers: [
-    DatePipe,
-    DateProxyPipe
+    DatePipe
   ]
 })
 export class NotesPageModule {}

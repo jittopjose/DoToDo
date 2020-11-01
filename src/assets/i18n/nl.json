@@ -21,7 +21,7 @@
         "today": "Vandaag",
         "tomorrow": "Morgen",
         "yesterday": "Gisteren",
-        "unfinished_task_copy_confirm_msg": "Je hebt onafgeronde taken. Wil je deze kopiëren naar vandaag?
+        "unfinished_task_copy_confirm_msg": "Je hebt onafgeronde taken. Wil je deze kopiëren naar vandaag?",
         "copy_tasks": "Taken kopiëren",
         "ignore": "Negeren",
         "copy": "Kopiëren",
@@ -109,5 +109,10 @@
         "task_due_in_30min_msg": "Taak: {{taskName}} verstrijkt binnen een halfuur.",
         "task_due_in_1hr_msg": "Taak: {{taskName}} verstrijkt binnen een uur.",
         "task_overdue_msg": "Taak: {{taskName}} is verstreken"
+    },
+    "COMMON": {
+        "month_short_names": "jan.,febr.,mrt.,apr,mei,juni,juli,aug.,sep.,okt.,nov.,dec.",
+        "day_short_names": "zo,ma,di,wo,do,vr,za",
+        "date_display_format": "DDD DD MMM YYYY"
     }
 }

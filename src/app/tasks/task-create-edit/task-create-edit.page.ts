@@ -23,7 +23,9 @@ export class TaskCreateEditPage implements OnInit {
   addTaskBtnLabel = this.translate.instant('TASK_CREATE_EDIT.add_task_button_label');
   updateTaskBtnLabel = this.translate.instant('TASK_CREATE_EDIT.update_task_button_label');
   dueDateTime = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
-
+  dayShortNames = [];
+  monthShortNames = [];
+  dateDisplayFormat = 'DDD MMM DD, YYYY';
   constructor(
     private route: ActivatedRoute,
     private navController: NavController,
@@ -32,6 +34,9 @@ export class TaskCreateEditPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.dayShortNames = this.translate.instant('COMMON.day_short_names');
+    this.monthShortNames = this.translate.instant('COMMON.month_short_names');
+    this.dateDisplayFormat = this.translate.instant('COMMON.date_display_format');
     this.route.paramMap.subscribe({
       next: (param) => {
         if (!param.get('taskId')) {

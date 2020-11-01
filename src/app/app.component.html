@@ -1,4 +1,54 @@
 <ion-app>
-  <div >Loading...</div>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side="start" menuId="first" contentId="main">
+    <ion-header>
+      <ion-toolbar color="dark">
+        <ion-title>Do To Do</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle>
+          <ion-item lines="none" [routerLink]="['/tasks/notes']">
+            <ion-icon
+              slot="start"
+              [src]="noteIcon"
+              class="ion-margin-end"
+            ></ion-icon>
+
+            <ion-label>Notes</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" [routerLink]="['/tasks/checklists']">
+            <ion-icon
+              slot="start"
+              [src]="checklistIcon"
+              class="ion-margin-end"
+            ></ion-icon>
+
+            <ion-label>Checklists</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" [routerLink]="['/tasks/settings']">
+            <ion-icon
+              slot="start"
+              [src]="settingsIcon"
+              class="ion-margin-end"
+            ></ion-icon>
+
+            <ion-label>Settings</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+    <ion-footer >
+      <ion-item >
+        <ion-label>v0.11.0 </ion-label>
+      </ion-item>
+    </ion-footer>
+  </ion-menu>
+  <div>Loading...</div>
+
+  <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>
